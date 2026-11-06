@@ -8,6 +8,11 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 dependencies = []
 
+[project.urls]
+Repository = "https://github.com/yu830/rlreplay"
+Documentation = "https://github.com/yu830/rlreplay/tree/main/docs"
+Issues = "https://github.com/yu830/rlreplay/issues"
+
 [project.optional-dependencies]
 binary = ["numpy>=2.3,<3", "safetensors>=0.8,<0.9"]
 

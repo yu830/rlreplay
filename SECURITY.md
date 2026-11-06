@@ -6,9 +6,9 @@ concerns with the affected version or commit and the smallest safe reproduction.
 
 ## Report privately
 
-When GitHub private vulnerability reporting is enabled for this repository, use
-the **Security** tab and **Report a vulnerability**. Availability of that channel
-must be confirmed when the repository is created.
+GitHub private vulnerability reporting is enabled for this repository. Use the
+**Security** tab and **Report a vulnerability**, or open the private reporting
+form. [Report privately](https://github.com/yu830/rlreplay/security/advisories/new)
 
 If a private report option is unavailable, ask a maintainer to establish a private
 contact method before sending vulnerability details. A public request should

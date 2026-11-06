@@ -1,5 +1,7 @@
 # RLReplay
 
+[![CI](https://github.com/yu830/rlreplay/actions/workflows/ci.yml/badge.svg)](https://github.com/yu830/rlreplay/actions/workflows/ci.yml)
+
 LLM training correctness and failure replay infrastructure.
 
 Experimental · Apache-2.0

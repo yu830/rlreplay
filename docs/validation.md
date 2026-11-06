@@ -18,9 +18,9 @@ The `0.1.0a1` candidate's 91-item suite includes three regression cases for unex
 | Windows, Python 3.12.13, binary extra | 90 passed, 1 skipped; the POSIX-permission case uses a Windows inherited-ACL boundary |
 | Windows, Python 3.14.7, binary extra | 90 passed, 1 platform skip |
 | WSL/Linux, Python 3.12.13, installed wheel | 91 passed |
-| Remote GitHub CI | NOT_RUN |
+| GitHub Actions, initial public commit | Four hosted jobs passed, including tests and installed-wheel checks |
 
-The Windows 3.11 and 3.14 environments also executed the JSON example in isolated no-site mode. The full public control set below was rerun from the candidate with 76/76 expected verdicts and exit codes. The configured GitHub Actions workflow awaits its first remote execution. Run the commands above to validate another checkout/environment.
+The Windows 3.11 and 3.14 environments also executed the JSON example in isolated no-site mode. The full public control set below was rerun from the candidate with 76/76 expected verdicts and exit codes. The first public commit passed all four hosted CI jobs. Run the commands above to validate another checkout/environment. [Initial CI evidence](https://github.com/yu830/rlreplay/actions/runs/42161533969) · [Current CI status](https://github.com/yu830/rlreplay/actions/workflows/ci.yml)
 
 ## Fixed public 20-case control set
 
