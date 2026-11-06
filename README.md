@@ -32,7 +32,7 @@ versions, modes and numerical assumptions are listed in
 | Framework | Capture and check | Semantic replay | Native replay | Native regression export |
 |---|---|---|---|---|
 | verl | Qualified CPU driver boundary | Available | Qualified driver | Available |
-| TRL | Qualified single-process CPU Trainer hooks | Available | Planned | Planned |
+| TRL | Qualified single-process CPU Trainer hooks | Available | [Frozen-provider CPU method](docs/trl-native-replay.md) | Available for the explicit native bundle |
 
 ## Try the JSON workflow
 
@@ -156,12 +156,13 @@ Native replay checks the recorded source/runtime fingerprints. Candidate-fix
 verification can explicitly use `--allow-revision-change`. Generated tests opt
 into candidate verification and should be reviewed before execution. A known
 fault remains failing until the installed candidate satisfies the declared
-contract. Standard TRL native-method replay requires an additional frozen-input
-contract and is tracked as planned.
+contract. Standard TRL additionally supports explicit
+[frozen-provider native replay and regression export](docs/trl-native-replay.md).
+Its separate bundle records text and token IDs and uses a caller-supplied Trainer.
 
 ## Validation and examples
 
-The current local validation includes a 91-item test suite across four
+The initial public snapshot recorded a 91-item test suite across four
 Python/platform environments and a fixed set of healthy, faulty, uncertain and
 damaged-input cases. Published validation records identify their source versions,
 denominators and execution conditions. Framework-native case studies record the

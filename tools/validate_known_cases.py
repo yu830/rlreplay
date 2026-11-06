@@ -11,6 +11,7 @@ import tempfile
 from collections import Counter
 from pathlib import Path
 
+import rlreplay
 from rlreplay import __version__
 from rlreplay.artifacts import encode, prepare_codec, write
 from rlreplay.core import Evidence
@@ -23,6 +24,59 @@ EXITS = {
     "INCONCLUSIVE": 3,
     "ERROR": 4,
 }
+
+
+def _result_verdict(value):
+    if not isinstance(value, dict):
+        return None
+    finding = value.get("finding")
+    if isinstance(finding, dict):
+        verdict = finding.get("verdict")
+        if isinstance(verdict, str) and verdict in EXITS and verdict != "ERROR":
+            return verdict
+    if value.get("state") == "ERROR" and isinstance(value.get("reason"), str):
+        return "ERROR"
+    return None
+
+
+def parse_response(stdout, stderr):
+    """Read one CLI result, allowing diagnostic lines before a terminal error."""
+    observations, parse_errors = [], {}
+    if stdout.strip():
+        try:
+            value = json.loads(stdout)
+        except json.JSONDecodeError:
+            parse_errors["stdout"] = "invalid_json"
+        else:
+            verdict = _result_verdict(value)
+            if verdict is None or verdict == "ERROR":
+                parse_errors["stdout"] = "invalid_finding"
+            else:
+                observations.append(verdict)
+
+    lines = [line for line in stderr.splitlines() if line.strip()]
+    for index, line in enumerate(lines):
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue  # Dependencies may write plain-text diagnostics to stderr.
+        verdict = _result_verdict(value)
+        if verdict is not None:
+            observations.append(verdict)
+            if verdict != "ERROR" or index != len(lines) - 1:
+                parse_errors["stderr"] = "result_not_terminal_error"
+        elif isinstance(value, dict) and (
+            value.get("state") == "ERROR" or "finding" in value
+        ):
+            parse_errors["stderr"] = "invalid_result"
+
+    if len(observations) > 1:
+        observed = "AMBIGUOUS"
+    elif parse_errors or not observations:
+        observed = "UNPARSEABLE"
+    else:
+        observed = observations[0]
+    return observed, parse_errors
 
 
 def execute(command, capsule, destination, case, category, codec, verdict):
@@ -49,26 +103,7 @@ def execute(command, capsule, destination, case, category, codec, verdict):
         "stderr": process.stderr,
         "capsule_sha256": hashlib.sha256(capsule.read_bytes()).hexdigest(),
     }
-    parsed, parse_errors, observations = {}, {}, []
-    for name, stream in (("stdout", process.stdout), ("stderr", process.stderr)):
-        if not stream.strip():
-            continue
-        try:
-            parsed[name] = json.loads(stream)
-        except json.JSONDecodeError:
-            parse_errors[name] = "invalid_json"
-    stdout, stderr = parsed.get("stdout"), parsed.get("stderr")
-    if isinstance(stdout, dict) and isinstance(stdout.get("finding"), dict):
-        actual = stdout["finding"].get("verdict")
-        if isinstance(actual, str):
-            observations.append(actual)
-    if isinstance(stderr, dict) and stderr.get("state") == "ERROR":
-        observations.append("ERROR")
-    observed = (
-        observations[0]
-        if len(set(observations)) == 1
-        else ("AMBIGUOUS" if observations else "UNPARSEABLE")
-    )
+    observed, parse_errors = parse_response(process.stdout, process.stderr)
     result.update(
         observed=observed,
         matches=observed == verdict and process.returncode == expected_exit,
@@ -163,6 +198,11 @@ def validate(destination, *, codec="both", fixture=FIXTURE):
         "status": "FAIL" if not success else ("PARTIAL" if skipped else "PASS"),
         "scope_complete": not skipped,
         "package_version": __version__,
+        "runtime": {
+            "python_version": sys.version,
+            "python_executable": sys.executable,
+            "package_source": str(Path(rlreplay.__file__).resolve()),
+        },
         "fixture_sha256": hashlib.sha256(fixture.read_bytes()).hexdigest(),
         "unique_cases": 20,
         "case_categories": dict(categories),

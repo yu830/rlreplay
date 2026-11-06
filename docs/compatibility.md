@@ -8,7 +8,7 @@ revision, recorded owner hashes and the supported configuration together.
 | Framework | Qualified revision | Implemented boundary | Replay and regression |
 |---|---|---|---|
 | verl | `31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe` | CPU DataProto and driver outcome-GRPO, full-group sampling | Semantic replay, native `compute_advantage`, native pytest export |
-| TRL | `a16af6502c4a1922045be533c94f66dd7c981374` | CPU single-process standard GRPOTrainer, runtime mixin and frozen importer | Semantic replay; native method replay/export require additional input contracts |
+| TRL | `a16af6502c4a1922045be533c94f66dd7c981374` | CPU single-process standard GRPOTrainer, runtime mixin and frozen importer | Semantic replay; [native method replay/export](trl-native-replay.md) with a separate explicit frozen-provider bundle |
 | NeMo RL | Source research only | Future receipt/ledger import | Runtime adapter qualification pending |
 
 The verl vectorized driver at the qualified revision drops the no-std flag. This
@@ -24,6 +24,39 @@ Its experimental async GRPO helper uses different variance/epsilon semantics and
 requires a separate contract.
 
 ## Upstream source watch
+
+Run the read-only source comparison tool from a source checkout:
+
+```bash
+uv run --locked python tools/compare_upstream.py verl main --auth gh --output verl-source-watch.json
+uv run --locked python tools/compare_upstream.py trl main --auth gh --output trl-source-watch.json
+```
+
+These commands use the active login of an installed GitHub CLI (`gh`). Credentials
+stay with GitHub CLI; the comparison tool neither extracts tokens nor writes them
+to reports. It uses authenticated GET requests for both revision resolution and
+source retrieval, and records `auth=gh`. Authentication errors remain errors;
+there is no silent anonymous fallback. Without `--auth gh`, the standard-library
+anonymous backend remains available and may encounter lower rate limits.
+
+Each output path must be a new file; omit `--output` to print the report only.
+The tool takes the baseline revision from the existing adapter, resolves a
+candidate branch or tag to a full commit SHA, and hashes the owner files fetched
+from those immutable revisions. It watches the verl driver, algorithms and
+groupwise owner, or the TRL Trainer and statistics owner. The Python code uses
+the standard library; authenticated mode additionally requires GitHub CLI.
+Both backends use HTTPS GET requests, with a configurable per-request
+`--timeout` (15 seconds by default). It does not execute fetched source or install
+a candidate framework.
+
+`source_compare` is `MATCH`, `CHANGED` or `UNAVAILABLE`, with per-file URLs,
+SHA-256 digests and fetch errors. `runtime_qualification` remains `NOT_RUN` for
+every result. Matching owners do not qualify the surrounding framework, and
+changed owners do not prove an execution failure. Existing adapter gates and the
+supported matrix above remain authoritative. Exit 0 means the source comparison
+completed, including a `CHANGED` result; exit 4 means a source/resolve/output error
+prevented a complete report. Partial file comparisons are retained when an owner
+cannot be fetched. No scheduled job or automatic compatibility admission is used.
 
 Official main snapshots checked on 2026-11-05 were TRL
 `bcfb115a5fcc6f367a9a77c65617e747fff8c28d` and verl

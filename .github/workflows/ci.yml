@@ -48,6 +48,18 @@ jobs:
         run: uv run --no-sync ruff format --check .
       - name: Run CPU tests including the optional codec
         run: uv run --no-sync pytest -q
+      - name: Run the complete public control set
+        if: matrix.python == '3.12'
+        run: uv run --no-sync python tools/validate_known_cases.py --output '${{ runner.temp }}/rlreplay-known-cases'
+      - name: Preserve failed public control diagnostics
+        if: failure() && matrix.python == '3.12'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: known-cases-${{ matrix.os }}-py${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/rlreplay-known-cases/summary.json
+            ${{ runner.temp }}/rlreplay-known-cases/commands.jsonl
+          if-no-files-found: warn
       - name: Build and test the installed wheel
         run: |
           $ErrorActionPreference = 'Stop'

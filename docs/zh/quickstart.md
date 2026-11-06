@@ -1,6 +1,6 @@
 # 中文快速开始
 
-RLReplay 的总目标是构建开放、可扩展、面向生产环境的LLM训练正确性验证与故障重放基础设施。当前版本聚焦固定verl/TRL配置下的outcome-GRPO，提供采集、独立检查、语义重放，以及verl原生重放与回归导出。[总Goal](../../GOAL.md) · [支持范围](../compatibility.md)
+RLReplay 的总目标是构建开放、可扩展、面向生产环境的LLM训练正确性验证与故障重放基础设施。当前版本聚焦固定verl/TRL配置下的outcome-GRPO，提供采集、独立检查、语义重放，以及verl原生重放与回归导出。TRL另有显式的[冻结生成/奖励边界原生回放](../trl-native-replay.md)，使用包含文本和token的独立包，不改变默认数值采集。[总Goal](../../GOAL.md) · [支持范围](../compatibility.md)
 
 先从源码目录运行CPU合成样例。需要Python 3.11或以上版本和uv。
 

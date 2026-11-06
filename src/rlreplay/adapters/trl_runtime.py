@@ -17,15 +17,11 @@ from rlreplay.adapters.trl import (
 LOGGER = logging.getLogger(__name__)
 
 
-def source_provenance(trainer):
-    """Bind the installed native owners to the qualified source, before training."""
+def implementation_provenance(*, allow_revision_change=False):
+    """Identify installed owners; candidate replay explicitly permits source changes."""
     from trl import GRPOTrainer
     from trl.trainer.utils import nanstd
 
-    native = super(GRPOCaptureMixin, trainer)
-    for name in ("_calculate_rewards", "_generate_and_score_completions"):
-        if getattr(native, name).__func__ is not getattr(GRPOTrainer, name):
-            raise ValueError("TRL capture requires the qualified native hook dispatch")
     owners = (
         (
             GRPOTrainer,
@@ -39,11 +35,14 @@ def source_provenance(trainer):
         ).hexdigest()
         for owner, _expected in owners
     ]
-    if digests != [expected for _owner, expected in owners]:
+    qualified = digests == [expected for _owner, expected in owners]
+    if not qualified and not allow_revision_change:
         raise ValueError("installed TRL owners differ from the qualified source")
     return {
         "framework": "trl",
-        "framework_revision": SUPPORTED_REVISION,
+        "framework_revision": SUPPORTED_REVISION
+        if qualified
+        else "unverified-local-revision",
         "algorithm_sha256": digests[0],
         "entrypoint_sha256": digests[0],
         "groupwise_sha256": digests[1],
@@ -59,6 +58,17 @@ def source_provenance(trainer):
         "world_size": "1",
         "rank": "0",
     }
+
+
+def source_provenance(trainer):
+    """Bind the installed native owners to the qualified source, before training."""
+    from trl import GRPOTrainer
+
+    native = super(GRPOCaptureMixin, trainer)
+    for name in ("_calculate_rewards", "_generate_and_score_completions"):
+        if getattr(native, name).__func__ is not getattr(GRPOTrainer, name):
+            raise ValueError("TRL capture requires the qualified native hook dispatch")
+    return implementation_provenance()
 
 
 def resolved_configuration(trainer):

@@ -14,6 +14,7 @@ them independently, and carries reproducible failures into replay and regression
 | Set budgets and manage storage | [Operating capture](production.md) |
 | Feed an existing logger or collector | [Telemetry](telemetry.md) |
 | Reproduce a framework defect | [verl normalization case](case-studies/verl-normalization.md) |
+| Replay a native TRL method or test a candidate | [TRL frozen-provider replay](trl-native-replay.md) |
 | Reproduce the validation controls | [Validation](validation.md) |
 | Measure capture cost and coverage | [Benchmarks](../benchmarks/README.md) |
 | Contribute a fix or adapter | [Contributing](../CONTRIBUTING.md) |

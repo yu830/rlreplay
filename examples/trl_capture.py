@@ -22,11 +22,8 @@ def synthetic_reward(completions, rlreplay_group_id, **kwargs):
     return values
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("directory", type=Path, help="new output directory")
-    args = parser.parse_args()
-
+def build_components(directory):
+    """Build the local tiny model, CPU configuration, data and tokenizer."""
     import torch
     from datasets import Dataset
     from tokenizers import Tokenizer
@@ -38,20 +35,8 @@ def main():
         PreTrainedTokenizerFast,
         set_seed,
     )
-    from trl import GRPOConfig, GRPOTrainer
+    from trl import GRPOConfig
 
-    from rlreplay import __version__
-    from rlreplay.adapters.trl import SUPPORTED_REVISION
-    from rlreplay.adapters.trl_runtime import GRPOCaptureMixin
-    from rlreplay.artifacts import read
-    from rlreplay.capture import Recorder
-    from rlreplay.contracts.grpo import check
-    from rlreplay.replay import semantic_replay
-
-    class CapturingTrainer(GRPOCaptureMixin, GRPOTrainer):
-        pass
-
-    args.directory.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(1)
     set_seed(20261105)
     backend = Tokenizer(
@@ -91,11 +76,8 @@ def main():
             pad_token_id=0,
         )
     )
-    before = {
-        name: parameter.detach().clone() for name, parameter in model.named_parameters()
-    }
     configuration = GRPOConfig(
-        output_dir=str(args.directory / "trainer-output"),
+        output_dir=str(Path(directory) / "trainer-output"),
         use_cpu=True,
         per_device_train_batch_size=6,
         num_generations=3,
@@ -129,6 +111,33 @@ def main():
             {"prompt": "beta question", "rlreplay_group_id": "group-beta"},
         ]
     )
+    return model, configuration, dataset, tokenizer
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("directory", type=Path, help="new output directory")
+    args = parser.parse_args()
+
+    import torch
+    from trl import GRPOTrainer
+
+    from rlreplay import __version__
+    from rlreplay.adapters.trl import SUPPORTED_REVISION
+    from rlreplay.adapters.trl_runtime import GRPOCaptureMixin
+    from rlreplay.artifacts import read
+    from rlreplay.capture import Recorder
+    from rlreplay.contracts.grpo import check
+    from rlreplay.replay import semantic_replay
+
+    class CapturingTrainer(GRPOCaptureMixin, GRPOTrainer):
+        pass
+
+    args.directory.mkdir(parents=True, exist_ok=False)
+    model, configuration, dataset, tokenizer = build_components(args.directory)
+    before = {
+        name: parameter.detach().clone() for name, parameter in model.named_parameters()
+    }
     recorder = Recorder(args.directory / "capsules", check=True)
     try:
         trainer = CapturingTrainer(

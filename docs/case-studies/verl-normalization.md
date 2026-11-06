@@ -46,6 +46,36 @@ dependencies installed. The example checks the qualified driver, algorithm and
 groupwise owner fingerprints. Install the framework dependencies separately from
 the lightweight Core. This fixture runs locally on preconstructed CPU tensors.
 
+### Set up an isolated Linux CPU environment
+
+From an RLReplay source checkout, the following commands create a separate
+Python environment and fetch the exact public verl revision. They install the
+dependencies needed to import this CPU driver; full training backends have
+additional environment requirements.
+
+```bash
+uv venv --python 3.12 ../rlreplay-verl-env
+task_python="../rlreplay-verl-env/bin/python"
+uv pip install --python "$task_python" torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
+git init ../verl-pinned
+git -C ../verl-pinned fetch --depth=1 https://github.com/verl-project/verl.git 31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe
+git -C ../verl-pinned checkout --detach FETCH_HEAD
+uv pip install --python "$task_python" --default-index https://pypi.org/simple -e ../verl-pinned pytest cachetools uvicorn fastapi
+uv pip install --python "$task_python" --default-index https://pypi.org/simple .
+source ../rlreplay-verl-env/bin/activate
+```
+
+At this revision, the driver imports `cachetools`, `uvicorn` and `fastapi` through
+its rollout modules even for a preconstructed CPU batch. The base verl package
+does not declare all three, so they are explicit in the installation command.
+The fixture does not start a Ray cluster, download a model or execute rollout.
+
+This path was exercised in a fresh WSL/Linux environment with Python 3.12.3,
+CPU-only PyTorch 2.13.0, NumPy 2.5.4, Transformers 5.16.1, Ray 2.60.0 and
+TensorDict 0.10.0. The framework dependencies are resolved at installation time;
+record the resolved versions with the results, and keep them fixed when testing
+the source-only candidate below.
+
 From the RLReplay repository root, use new output directories:
 
 ```bash
@@ -65,18 +95,22 @@ Discover the single JSON capsule and run the ordinary CLI:
 ```bash
 CAPSULE="$(python -c 'from pathlib import Path; paths = list(Path("demo-verl-no-std/capsules").glob("*.json")); assert len(paths) == 1, paths; print(paths[0])')"
 python -m rlreplay check "$CAPSULE"
+python -m rlreplay replay "$CAPSULE"
 python -m rlreplay replay "$CAPSULE" --runner verl
 python -m rlreplay export-test "$CAPSULE" regression-no-std
 python -m pytest -q regression-no-std
 ```
 
-The first two commands return exit 2. The export succeeds; the generated pytest
+The first three commands return exit 2. Default replay checks the saved observation
+against the independent reference; `--runner verl` executes the installed driver
+and checks its newly computed output. Reproducing the mismatch is the expected
+result against the original driver. The export succeeds; the generated pytest
 then fails against the original driver because it asserts that the replayed
 candidate satisfies the declared contract. Preserve this failure as evidence.
 
 ## Explain and verify the local fix
 
-The [scalar GRPO branch](https://github.com/verl-project/verl/blob/31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe/verl/trainer/ppo/ray_trainer.py#L230-L243)
+The [scalar GRPO branch](https://github.com/verl-project/verl/blob/31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe/verl/trainer/ppo/ray_trainer.py#L235-L245)
 forwards the flag. The [generic estimator dispatch](https://github.com/verl-project/verl/blob/31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe/verl/trainer/ppo/ray_trainer.py#L248-L282)
 does not include it, and the
 [vectorized helper](https://github.com/verl-project/verl/blob/31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe/verl/trainer/ppo/core_algos.py#L335-L358)
@@ -91,12 +125,21 @@ if adv_estimator == AdvantageEstimator.GRPO_VECTORIZED:
     adv_kwargs["norm_adv_by_std_in_grpo"] = norm_adv_by_std_in_grpo
 ```
 
-Use a separate environment containing that candidate and rerun the **same
-exported regression against the original capsule**:
+Keep the original checkout intact. Point the isolated reproduction environment
+at the separate, reviewed candidate checkout, then rerun the **same exported
+regression against the original capsule**:
 
 ```bash
+uv pip install --python "$task_python" --no-deps --reinstall -e ../verl-candidate
 python -m pytest -q regression-no-std
 ```
+
+Keep the Python, PyTorch and NumPy versions and the other framework owners fixed
+when testing this source-only candidate change. Record the original capsule
+digest and loaded candidate source digest with the result. A failure to import
+the framework or initialize its dependencies is an environment failure, not the
+expected semantic regression failure; check the assertion and finding in the
+pytest output as well as the exit code.
 
 The local candidate passes. The exported test explicitly enables revision
 changes for candidate verification; ordinary native replay requires matching
@@ -113,5 +156,6 @@ These identify the original and locally reviewed candidate source files.
 This case qualifies function-level CPU replay and regression for a fixed
 outcome-GRPO configuration. Full training correctness, model quality, production
 overhead and other framework revisions require their own validation. TRL shares
-the Evidence/Oracle/semantic-replay path; native replay and regression export
-currently target verl.
+the Evidence/Oracle/semantic-replay path and additionally supports
+[native-method replay](../trl-native-replay.md) through a separate explicit bundle
+with frozen generation and reward providers.

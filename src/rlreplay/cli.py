@@ -24,15 +24,50 @@ def main(argv=None) -> int:
         sub.add_argument("capsule")
         if command == "replay":
             sub.add_argument(
-                "--runner", choices=("semantic", "verl"), default="semantic"
+                "--runner", choices=("semantic", "verl", "trl"), default="semantic"
             )
             sub.add_argument("--allow-revision-change", action="store_true")
+            sub.add_argument(
+                "--trainer-factory", help="explicit local module:function for TRL"
+            )
         elif command == "diff":
             sub.add_argument("other")
         elif command == "export-test":
             sub.add_argument("directory")
+            sub.add_argument("--runner", choices=("verl", "trl"), default="verl")
+            sub.add_argument(
+                "--trainer-factory", help="explicit local module:function for TRL"
+            )
     args = parser.parse_args(argv)
     try:
+        if args.command in ("replay", "export-test") and args.runner == "trl":
+            from rlreplay.trl_replay import (
+                export_trl_test,
+                read_trl,
+                run_trl,
+                trainer_from_factory,
+            )
+
+            if args.command == "replay":
+                bundle = read_trl(args.capsule)
+                trainer = trainer_from_factory(args.trainer_factory)
+                output = run_trl(
+                    bundle, trainer, allow_revision_change=args.allow_revision_change
+                )
+            else:
+                output = {
+                    "test": str(
+                        export_trl_test(
+                            args.capsule,
+                            args.directory,
+                            trainer_factory=args.trainer_factory,
+                        )
+                    )
+                }
+            print(json.dumps(output, indent=2, allow_nan=False))
+            return (
+                EXIT_CODES[output["finding"]["verdict"]] if "finding" in output else 0
+            )
         evidence = read(args.capsule)
         if args.command == "inspect":
             output = {

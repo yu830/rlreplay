@@ -79,8 +79,9 @@ with `--allow-revision-change` and its actual source is recorded in the result.
 
 `export-test <verl-capsule> <new-directory>` creates a native candidate regression
 and fixture. Review the generated test, then run it with pytest in the compatible
-verl environment. Standard TRL currently supports runtime capture and semantic
-replay; its native-method regression input contract remains pending.
+verl environment. Standard TRL numeric capsules support runtime capture and
+semantic replay. Its separate [native-method replay workflow](trl-native-replay.md)
+uses an explicit frozen-provider bundle and a caller-supplied Trainer factory.
 
 ## Connect a training job
 

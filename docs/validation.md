@@ -45,6 +45,27 @@ Actual alpha1 local execution matched all **76/76** expected verdicts and exit c
 
 `--output NEW_DIRECTORY` preserves capsules, `commands.jsonl` and `summary.json` for review. Without it, files are temporary and the summary is printed. Paths inside command records are relative to that output directory.
 
+The summary records the interpreter and package source used by the validator,
+alongside the package version and fixture digest. The workflow includes the full
+control set in its existing Windows and Ubuntu Python 3.12 jobs. Failed-job
+artifacts retain the summary and raw command records when those files exist.
+The alpha1 results above describe the published snapshot; new workflow results
+must be read from the corresponding commit's CI run.
+
+### CLI results and dependency diagnostics
+
+The validator reads one complete JSON finding from stdout, or a single-line
+`{"state":"ERROR","reason":"..."}` result at the end of stderr. Ordinary
+dependency warnings before an error result are retained and do not prevent
+parsing. Warnings also do not invalidate a well-formed stdout finding.
+
+Repeated or conflicting result records remain `AMBIGUOUS`. Malformed stdout,
+missing results, and an error result followed by further log lines remain
+`UNPARSEABLE`. A valid result with the wrong exit code is still a mismatch.
+Neither the expected verdict nor exit code alone is used to guess a result.
+Focused regressions inject the warning-prefix shape, so this behavior does not
+depend on a particular OpenBLAS build emitting a warning on the CI runner.
+
 ### Fixture provenance and transformations
 
 The fixture contains synthetic reward/mask/advantage values, formula anchors and controlled mutations. Framework-derived numbers retain their original framework revisions, owner/source digests, numerical profiles and runtime metadata. TRL's epsilon `1e-4` and verl/formula epsilon `1e-6` remain explicit. The known variance-floor values correspond to the mechanism fixed in [verl #6348](https://github.com/verl-project/verl/pull/6348); a control does not assert that current upstream still contains a defect.
@@ -60,6 +81,20 @@ uv run --locked python tools/validate_known_cases.py --codec json
 ```
 
 This selects 38/76 check/replay commands, reports `PARTIAL` and explicitly marks the 19 binary variants, including the truncated binary control, `NOT_RUN`. It cannot establish the complete 20-case/two-format acceptance result. In the default `both` mode, binary dependencies and valid binary construction are checked before malformed binary inputs; a missing optional dependency is an execution error, not evidence that a corrupt binary payload was correctly rejected.
+
+## TRL native-method controls
+
+The [native replay example](trl-native-replay.md) exercises a real CPU Trainer
+method with frozen providers, exact same-source output reproduction and generated
+candidate regression. Local checks include a full-source epsilon mutation that
+produces `SUSPECTED_MISMATCH`, and a zero-completion-mask mutation rejected as
+`CONTRACT_VIOLATION/trl_frozen_generation_layout`. The latter check derives IDs,
+masks and valid-token count independently from frozen generation inputs.
+
+These mutations are controlled tests, not claims of upstream defects. The scalar
+and layout controls supplement the existing numeric Evidence tests; old capsules
+continue to use their original reader and semantic contract. New local native
+qualification is separate from the historical hosted CI result above.
 
 ## Reproduce a small CPU capture run
 

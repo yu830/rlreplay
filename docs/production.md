@@ -101,10 +101,14 @@ has been joined.
 
 ## Data handling
 
-The schema limits captured content to numeric observations, identities and source
+The default Evidence schema limits captured content to numeric observations, identities and source
 metadata. Callers should use opaque sample/group IDs and review the sensitivity of
 their metadata. Public error messages contain error type and stage rather than
 raw exception values. Capsules remain local until the user explicitly exports them.
+
+The separate [TRL native replay bundle](trl-native-replay.md) is an explicit debug
+operation containing text and token IDs. It does not use the default Recorder or
+its asynchronous observation policy; its capture errors propagate to the caller.
 
 New directories/files request owner-only POSIX permissions on filesystems that
 honor those modes. Windows volumes, including WSL-mounted Windows paths, use the

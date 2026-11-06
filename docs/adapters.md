@@ -95,10 +95,11 @@ and masks. It shares the existing artifact format and GRPO Oracle with verl.
 Unsupported configurations raise. Incomplete groups preserve INCONCLUSIVE.
 
 The standard TRL method combines generation, rewards and advantage computation.
-The current capsule supports independent semantic replay. A native-method runner
-needs a versioned contract for the additional generation/reward providers and
-Trainer configuration. The `--runner verl` and native regression export commands
-retain their framework guard.
+The numeric capsule supports independent semantic replay. The separate explicit
+[TRL native-method bundle](trl-native-replay.md) records the additional frozen
+generation/reward providers and Trainer configuration for native replay/export.
+It contains text and token IDs and is not created by the default numeric capture
+path. The `--runner verl` command retains its framework guard.
 
 ## Adding a framework boundary
 

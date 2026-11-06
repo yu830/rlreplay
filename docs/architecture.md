@@ -12,6 +12,10 @@ a versioned capsule. The same capsule can be inspected and checked offline.
 
 [Full-size diagram](assets/architecture.svg) · [Mermaid source](assets/architecture.mmd)
 
+The diagram describes the default numeric capture path. Explicit
+[TRL native replay](trl-native-replay.md) uses a separate bounded bundle and a
+caller-owned real Trainer with frozen generation/reward providers.
+
 ## Responsibilities
 
 | Component | Responsibility | Source |
@@ -22,6 +26,7 @@ a versioned capsule. The same capsule can be inspected and checked offline.
 | Artifact format | Bound payloads, validate schema/content, publish JSON or optional numeric capsules | [`artifacts.py`](../src/rlreplay/artifacts.py) |
 | Correctness oracle | Evaluate structural contracts and independent numerical expectations | [`contracts/grpo.py`](../src/rlreplay/contracts/grpo.py) |
 | Replay | Recompute a semantic reference or invoke a qualified native implementation | [`replay.py`](../src/rlreplay/replay.py) |
+| TRL method replay | Freeze explicit provider inputs, check source/configuration, execute the full native method and export a candidate regression | [`trl_replay.py`](../src/rlreplay/trl_replay.py) |
 | Telemetry | Convert caller-owned statistics to fixed numeric counters and gauges | [`telemetry.py`](../src/rlreplay/telemetry.py) |
 
 ## Capture and failure handling
