@@ -1,0 +1,6 @@
+flowchart LR
+    A["Adapters<br/>verl / TRL"] --> R["Capture<br/>Recorder + worker"]
+    R --> C["Capsule<br/>Evidence + profile"]
+    C --> O["Oracle<br/>Independent checks"]
+    C --> S["Replay<br/>Semantic / native verl"]
+    C --> G["Regression<br/>pytest for verl"]

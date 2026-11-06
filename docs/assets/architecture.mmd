@@ -1,0 +1,17 @@
+flowchart TD
+    T["Training frameworks · verl / TRL"] --> A["Thin adapters · identities and actual configuration"]
+    A --> R["Recorder · admission and owned snapshot"]
+    subgraph CORE["Framework-neutral capture and analysis"]
+        R --> W["Isolated worker · encode and publish"]
+        W --> C["Capsule · Evidence + Profile + Provenance"]
+        W -. "optional online check" .-> O["Independent correctness oracle"]
+        C --> O
+        O --> F["Findings · qualified verdicts and evidence"]
+        C --> S["Semantic replay · independent reference"]
+        S --> F
+    end
+    C --> N["Native replay · qualified verl driver"]
+    N --> O
+    C --> G["Regression export · pytest fixture and test"]
+    G -. "generated test calls" .-> N
+    R -. "counters and status" .-> M["Application telemetry · logger / OpenTelemetry"]

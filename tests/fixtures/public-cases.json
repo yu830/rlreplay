@@ -1,0 +1,1631 @@
+{
+  "format": "rlreplay-public-known-cases/1",
+  "expected_categories": {
+    "healthy": 6,
+    "fault": 8,
+    "inconclusive": 4,
+    "bad_payload": 2
+  },
+  "scope": "Fixed synthetic numeric controls, not production error-rate or accuracy estimates. Semantic check/replay needs no training framework.",
+  "transformation": "Run/sample/group identities are deterministic public aliases; numeric values/types, masks, ordering, completeness and semantic profiles are unchanged. Collection origin is relabeled as a public projection; original framework revisions and source digests are retained, not asserted to match the reader runtime.",
+  "source_notes": [
+    "Framework controls originate from synthetic reward/mask batches in fixed verl and TRL calls; no prompt text, model tensors, checkpoints or user data are included.",
+    "Formula/mutation controls include hand-derived sample-std anchors, known variance-floor values, identity/mask/nonfinite faults and explicit uncertainty. Their original synthetic-producer digest is retained as provenance; the fixture is self-contained for semantic replay.",
+    "TRL advantages are broadcast over its captured completion mask. Epsilon=1e-4 is preserved; verl/formula profiles use epsilon=1e-6.",
+    "The variance-floor control follows the mechanism fixed in https://github.com/verl-project/verl/pull/6348 . It does not claim that the current upstream still has that defect."
+  ],
+  "cases": [
+    {
+      "id": "verl-0",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-verl-0-sample-0",
+            "public-verl-0-group-0"
+          ],
+          [
+            "public-verl-0-sample-1",
+            "public-verl-0-group-0"
+          ],
+          [
+            "public-verl-0-sample-2",
+            "public-verl-0-group-1"
+          ],
+          [
+            "public-verl-0-sample-3",
+            "public-verl-0-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "369b614f239f237a04a38a40b1877cd6fd14aa7bd5f9ff4fe4d7758b682a6948",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "verl.trainer.ppo.ray_trainer.compute_advantage",
+          "entrypoint_sha256": "eb41f99ccc66976eab14ebe35aa1aa5b7318e02469240ef1569ac4c884c94312",
+          "framework": "verl",
+          "framework_revision": "31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe",
+          "groupwise_sha256": "409403d0002ff0d1fd1c41812163b1cfa52a52248677aab00e6ffcf3b937b442",
+          "numpy_version": "2.3.5",
+          "phase": "post_advantage",
+          "python_version": "3.12.13",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-verl-0-v1",
+          "step": "0",
+          "torch_version": "2.13.0"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071065306663513,
+              -0.7071065306663513,
+              -0.7071065306663513
+            ],
+            "group_id": "public-verl-0-group-1",
+            "mask": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "reward": 2.0,
+            "sample_id": "public-verl-0-sample-2"
+          },
+          {
+            "advantage": [
+              -0.7071062922477722,
+              -0.7071062922477722,
+              -0.0
+            ],
+            "group_id": "public-verl-0-group-0",
+            "mask": [
+              1.0,
+              1.0,
+              0.0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-verl-0-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071065306663513,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-0-group-1",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 6.0,
+            "sample_id": "public-verl-0-sample-3"
+          },
+          {
+            "advantage": [
+              0.7071062922477722,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-0-group-0",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 3.0,
+            "sample_id": "public-verl-0-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "verl-1",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-verl-1-sample-0",
+            "public-verl-1-group-0"
+          ],
+          [
+            "public-verl-1-sample-1",
+            "public-verl-1-group-0"
+          ],
+          [
+            "public-verl-1-sample-2",
+            "public-verl-1-group-1"
+          ],
+          [
+            "public-verl-1-sample-3",
+            "public-verl-1-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo",
+          "normalize_std": false,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "369b614f239f237a04a38a40b1877cd6fd14aa7bd5f9ff4fe4d7758b682a6948",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "verl.trainer.ppo.ray_trainer.compute_advantage",
+          "entrypoint_sha256": "eb41f99ccc66976eab14ebe35aa1aa5b7318e02469240ef1569ac4c884c94312",
+          "framework": "verl",
+          "framework_revision": "31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe",
+          "groupwise_sha256": "409403d0002ff0d1fd1c41812163b1cfa52a52248677aab00e6ffcf3b937b442",
+          "numpy_version": "2.3.5",
+          "phase": "post_advantage",
+          "python_version": "3.12.13",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-verl-1-v1",
+          "step": "0",
+          "torch_version": "2.13.0"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -2.0,
+              -2.0,
+              -2.0
+            ],
+            "group_id": "public-verl-1-group-1",
+            "mask": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "reward": 2.0,
+            "sample_id": "public-verl-1-sample-2"
+          },
+          {
+            "advantage": [
+              -1.0,
+              -1.0,
+              -0.0
+            ],
+            "group_id": "public-verl-1-group-0",
+            "mask": [
+              1.0,
+              1.0,
+              0.0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-verl-1-sample-0"
+          },
+          {
+            "advantage": [
+              2.0,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-1-group-1",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 6.0,
+            "sample_id": "public-verl-1-sample-3"
+          },
+          {
+            "advantage": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-1-group-0",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 3.0,
+            "sample_id": "public-verl-1-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "verl-2",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-verl-2-sample-0",
+            "public-verl-2-group-0"
+          ],
+          [
+            "public-verl-2-sample-1",
+            "public-verl-2-group-0"
+          ],
+          [
+            "public-verl-2-sample-2",
+            "public-verl-2-group-1"
+          ],
+          [
+            "public-verl-2-sample-3",
+            "public-verl-2-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "369b614f239f237a04a38a40b1877cd6fd14aa7bd5f9ff4fe4d7758b682a6948",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "verl.trainer.ppo.ray_trainer.compute_advantage",
+          "entrypoint_sha256": "eb41f99ccc66976eab14ebe35aa1aa5b7318e02469240ef1569ac4c884c94312",
+          "framework": "verl",
+          "framework_revision": "31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe",
+          "groupwise_sha256": "409403d0002ff0d1fd1c41812163b1cfa52a52248677aab00e6ffcf3b937b442",
+          "numpy_version": "2.3.5",
+          "phase": "post_advantage",
+          "python_version": "3.12.13",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-verl-2-v1",
+          "step": "0",
+          "torch_version": "2.13.0"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071065306663513,
+              -0.7071065306663513,
+              -0.7071065306663513
+            ],
+            "group_id": "public-verl-2-group-1",
+            "mask": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "reward": 2.0,
+            "sample_id": "public-verl-2-sample-2"
+          },
+          {
+            "advantage": [
+              -0.7071062922477722,
+              -0.7071062922477722,
+              -0.0
+            ],
+            "group_id": "public-verl-2-group-0",
+            "mask": [
+              1.0,
+              1.0,
+              0.0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-verl-2-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071065306663513,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-2-group-1",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 6.0,
+            "sample_id": "public-verl-2-sample-3"
+          },
+          {
+            "advantage": [
+              0.7071062922477722,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-2-group-0",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 3.0,
+            "sample_id": "public-verl-2-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "verl-3",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "SUSPECTED_MISMATCH",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-verl-3-sample-0",
+            "public-verl-3-group-0"
+          ],
+          [
+            "public-verl-3-sample-1",
+            "public-verl-3-group-0"
+          ],
+          [
+            "public-verl-3-sample-2",
+            "public-verl-3-group-1"
+          ],
+          [
+            "public-verl-3-sample-3",
+            "public-verl-3-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": false,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "369b614f239f237a04a38a40b1877cd6fd14aa7bd5f9ff4fe4d7758b682a6948",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "verl.trainer.ppo.ray_trainer.compute_advantage",
+          "entrypoint_sha256": "eb41f99ccc66976eab14ebe35aa1aa5b7318e02469240ef1569ac4c884c94312",
+          "framework": "verl",
+          "framework_revision": "31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe",
+          "groupwise_sha256": "409403d0002ff0d1fd1c41812163b1cfa52a52248677aab00e6ffcf3b937b442",
+          "numpy_version": "2.3.5",
+          "phase": "post_advantage",
+          "python_version": "3.12.13",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-verl-3-v1",
+          "step": "0",
+          "torch_version": "2.13.0"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071065306663513,
+              -0.7071065306663513,
+              -0.7071065306663513
+            ],
+            "group_id": "public-verl-3-group-1",
+            "mask": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "reward": 2.0,
+            "sample_id": "public-verl-3-sample-2"
+          },
+          {
+            "advantage": [
+              -0.7071062922477722,
+              -0.7071062922477722,
+              -0.0
+            ],
+            "group_id": "public-verl-3-group-0",
+            "mask": [
+              1.0,
+              1.0,
+              0.0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-verl-3-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071065306663513,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-3-group-1",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 6.0,
+            "sample_id": "public-verl-3-sample-3"
+          },
+          {
+            "advantage": [
+              0.7071062922477722,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-verl-3-group-0",
+            "mask": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "reward": 3.0,
+            "sample_id": "public-verl-3-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "trl-healthy",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-trl-healthy-sample-0",
+            "public-trl-healthy-group-0"
+          ],
+          [
+            "public-trl-healthy-sample-1",
+            "public-trl-healthy-group-0"
+          ],
+          [
+            "public-trl-healthy-sample-2",
+            "public-trl-healthy-group-0"
+          ],
+          [
+            "public-trl-healthy-sample-3",
+            "public-trl-healthy-group-1"
+          ],
+          [
+            "public-trl-healthy-sample-4",
+            "public-trl-healthy-group-1"
+          ],
+          [
+            "public-trl-healthy-sample-5",
+            "public-trl-healthy-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 0.0001,
+          "implementation": "trl_grpo",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "28f815d86f6416842debd444dcbd815b4373fe86ad2917e180b4d1780a220605",
+          "capture_mode": "sampled",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "trl.trainer.grpo_trainer.GRPOTrainer._generate_and_score_completions",
+          "entrypoint_sha256": "28f815d86f6416842debd444dcbd815b4373fe86ad2917e180b4d1780a220605",
+          "framework": "trl",
+          "framework_revision": "a16af6502c4a1922045be533c94f66dd7c981374",
+          "groupwise_sha256": "ad364fb106b4a31331267ebef0d58fb3ad0bfbfd04accc09227212d29b6f8ba5",
+          "numpy_version": "2.3.5",
+          "phase": "post_generate_score.scalar_broadcast_mask",
+          "python_version": "3.12.13",
+          "rank": "0",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-trl-healthy-v1",
+          "step": "0",
+          "torch_version": "2.13.0",
+          "world_size": "1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.9998999834060669,
+              -0.9998999834060669,
+              -0.9998999834060669,
+              -0.9998999834060669
+            ],
+            "group_id": "public-trl-healthy-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 0.0,
+            "sample_id": "public-trl-healthy-sample-0"
+          },
+          {
+            "advantage": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-trl-healthy-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-trl-healthy-sample-1"
+          },
+          {
+            "advantage": [
+              0.9998999834060669,
+              0.9998999834060669,
+              0.9998999834060669,
+              0.9998999834060669
+            ],
+            "group_id": "public-trl-healthy-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 2.0,
+            "sample_id": "public-trl-healthy-sample-2"
+          },
+          {
+            "advantage": [
+              -0.9998999834060669,
+              -0.9998999834060669,
+              -0.0,
+              -0.0
+            ],
+            "group_id": "public-trl-healthy-group-1",
+            "mask": [
+              1,
+              1,
+              0,
+              0
+            ],
+            "reward": 0.0,
+            "sample_id": "public-trl-healthy-sample-3"
+          },
+          {
+            "advantage": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "group_id": "public-trl-healthy-group-1",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-trl-healthy-sample-4"
+          },
+          {
+            "advantage": [
+              0.9998999834060669,
+              0.9998999834060669,
+              0.9998999834060669,
+              0.9998999834060669
+            ],
+            "group_id": "public-trl-healthy-group-1",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 2.0,
+            "sample_id": "public-trl-healthy-sample-5"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "trl-injected",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "SUSPECTED_MISMATCH",
+      "source_kind": "synthetic_framework_output",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-trl-injected-sample-0",
+            "public-trl-injected-group-0"
+          ],
+          [
+            "public-trl-injected-sample-1",
+            "public-trl-injected-group-0"
+          ],
+          [
+            "public-trl-injected-sample-2",
+            "public-trl-injected-group-0"
+          ],
+          [
+            "public-trl-injected-sample-3",
+            "public-trl-injected-group-1"
+          ],
+          [
+            "public-trl-injected-sample-4",
+            "public-trl-injected-group-1"
+          ],
+          [
+            "public-trl-injected-sample-5",
+            "public-trl-injected-group-1"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 0.0001,
+          "implementation": "trl_grpo",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "28f815d86f6416842debd444dcbd815b4373fe86ad2917e180b4d1780a220605",
+          "capture_mode": "sampled",
+          "device": "cpu",
+          "dtype": "float32",
+          "entrypoint": "trl.trainer.grpo_trainer.GRPOTrainer._generate_and_score_completions",
+          "entrypoint_sha256": "28f815d86f6416842debd444dcbd815b4373fe86ad2917e180b4d1780a220605",
+          "framework": "trl",
+          "framework_revision": "a16af6502c4a1922045be533c94f66dd7c981374",
+          "groupwise_sha256": "ad364fb106b4a31331267ebef0d58fb3ad0bfbfd04accc09227212d29b6f8ba5",
+          "numpy_version": "2.3.5",
+          "phase": "post_generate_score.scalar_broadcast_mask",
+          "python_version": "3.12.13",
+          "rank": "0",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-trl-injected-v1",
+          "step": "0",
+          "torch_version": "2.13.0",
+          "world_size": "1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7498999834060669,
+              -0.7498999834060669,
+              -0.7498999834060669,
+              -0.7498999834060669
+            ],
+            "group_id": "public-trl-injected-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 0.0,
+            "sample_id": "public-trl-injected-sample-0"
+          },
+          {
+            "advantage": [
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            "group_id": "public-trl-injected-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-trl-injected-sample-1"
+          },
+          {
+            "advantage": [
+              1.249899983406067,
+              1.249899983406067,
+              1.249899983406067,
+              1.249899983406067
+            ],
+            "group_id": "public-trl-injected-group-0",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 2.0,
+            "sample_id": "public-trl-injected-sample-2"
+          },
+          {
+            "advantage": [
+              -0.7498999834060669,
+              -0.7498999834060669,
+              -0.0,
+              -0.0
+            ],
+            "group_id": "public-trl-injected-group-1",
+            "mask": [
+              1,
+              1,
+              0,
+              0
+            ],
+            "reward": 0.0,
+            "sample_id": "public-trl-injected-sample-3"
+          },
+          {
+            "advantage": [
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            "group_id": "public-trl-injected-group-1",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-trl-injected-sample-4"
+          },
+          {
+            "advantage": [
+              1.249899983406067,
+              1.249899983406067,
+              1.249899983406067,
+              1.249899983406067
+            ],
+            "group_id": "public-trl-injected-group-1",
+            "mask": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "reward": 2.0,
+            "sample_id": "public-trl-injected-sample-5"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "hand-derived",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-hand-derived-sample-0",
+            "public-hand-derived-group-0"
+          ],
+          [
+            "public-hand-derived-sample-1",
+            "public-hand-derived-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-hand-derived-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-hand-derived-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-hand-derived-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-hand-derived-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-hand-derived-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "variance-floor-bad",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "SUSPECTED_MISMATCH",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-variance-floor-bad-sample-0",
+            "public-variance-floor-bad-group-0"
+          ],
+          [
+            "public-variance-floor-bad-sample-1",
+            "public-variance-floor-bad-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-variance-floor-bad-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.005001788027584553
+            ],
+            "group_id": "public-variance-floor-bad-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-variance-floor-bad-sample-0"
+          },
+          {
+            "advantage": [
+              0.005001788027584553
+            ],
+            "group_id": "public-variance-floor-bad-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0000100135803223,
+            "sample_id": "public-variance-floor-bad-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "variance-floor-fixed",
+      "category": "healthy",
+      "kind": "evidence",
+      "expected_verdict": "PASS",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-variance-floor-fixed-sample-0",
+            "public-variance-floor-fixed-group-0"
+          ],
+          [
+            "public-variance-floor-fixed-sample-1",
+            "public-variance-floor-fixed-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-variance-floor-fixed-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.6196008324623108
+            ],
+            "group_id": "public-variance-floor-fixed-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-variance-floor-fixed-sample-0"
+          },
+          {
+            "advantage": [
+              0.6196008324623108
+            ],
+            "group_id": "public-variance-floor-fixed-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0000100135803223,
+            "sample_id": "public-variance-floor-fixed-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "duplicate-id",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "CONTRACT_VIOLATION",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-duplicate-id-sample-0",
+            "public-duplicate-id-group-0"
+          ],
+          [
+            "public-duplicate-id-sample-1",
+            "public-duplicate-id-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-duplicate-id-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-duplicate-id-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-duplicate-id-sample-1"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-duplicate-id-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-duplicate-id-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "group-identity",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "CONTRACT_VIOLATION",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-group-identity-sample-0",
+            "public-group-identity-group-0"
+          ],
+          [
+            "public-group-identity-sample-1",
+            "public-group-identity-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-group-identity-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-group-identity-group-1",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-group-identity-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-group-identity-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-group-identity-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "nonbinary-mask",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "CONTRACT_VIOLATION",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-nonbinary-mask-sample-0",
+            "public-nonbinary-mask-group-0"
+          ],
+          [
+            "public-nonbinary-mask-sample-1",
+            "public-nonbinary-mask-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-nonbinary-mask-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-nonbinary-mask-group-0",
+            "mask": [
+              1,
+              2
+            ],
+            "reward": 1.0,
+            "sample_id": "public-nonbinary-mask-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-nonbinary-mask-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-nonbinary-mask-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "padding-advantage",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "CONTRACT_VIOLATION",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-padding-advantage-sample-0",
+            "public-padding-advantage-group-0"
+          ],
+          [
+            "public-padding-advantage-sample-1",
+            "public-padding-advantage-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-padding-advantage-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.1
+            ],
+            "group_id": "public-padding-advantage-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-padding-advantage-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-padding-advantage-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-padding-advantage-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "nonfinite",
+      "category": "fault",
+      "kind": "evidence",
+      "expected_verdict": "CONTRACT_VIOLATION",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-nonfinite-sample-0",
+            "public-nonfinite-group-0"
+          ],
+          [
+            "public-nonfinite-sample-1",
+            "public-nonfinite-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-nonfinite-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              {
+                "nonfinite": "nan"
+              },
+              0.0
+            ],
+            "group_id": "public-nonfinite-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-nonfinite-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-nonfinite-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-nonfinite-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "binary32-roundoff",
+      "category": "inconclusive",
+      "kind": "evidence",
+      "expected_verdict": "INCONCLUSIVE",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-binary32-roundoff-sample-0",
+            "public-binary32-roundoff-group-0"
+          ],
+          [
+            "public-binary32-roundoff-sample-1",
+            "public-binary32-roundoff-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-binary32-roundoff-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              0.0
+            ],
+            "group_id": "public-binary32-roundoff-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0,
+            "sample_id": "public-binary32-roundoff-sample-0"
+          },
+          {
+            "advantage": [
+              0.10651206225156784
+            ],
+            "group_id": "public-binary32-roundoff-group-0",
+            "mask": [
+              1
+            ],
+            "reward": 1.0000001192092896,
+            "sample_id": "public-binary32-roundoff-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "incomplete-group",
+      "category": "inconclusive",
+      "kind": "evidence",
+      "expected_verdict": "INCONCLUSIVE",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": false,
+        "membership": [
+          [
+            "public-incomplete-group-sample-0",
+            "public-incomplete-group-group-0"
+          ],
+          [
+            "public-incomplete-group-sample-1",
+            "public-incomplete-group-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-incomplete-group-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-incomplete-group-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-incomplete-group-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-incomplete-group-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-incomplete-group-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "missing-source",
+      "category": "inconclusive",
+      "kind": "evidence",
+      "expected_verdict": "INCONCLUSIVE",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-missing-source-sample-0",
+            "public-missing-source-group-0"
+          ],
+          [
+            "public-missing-source-sample-1",
+            "public-missing-source-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 1,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-missing-source-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-missing-source-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-missing-source-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-missing-source-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-missing-source-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "unsupported-ddof",
+      "category": "inconclusive",
+      "kind": "evidence",
+      "expected_verdict": "INCONCLUSIVE",
+      "source_kind": "synthetic_formula_or_mutation",
+      "evidence": {
+        "complete_groups": true,
+        "membership": [
+          [
+            "public-unsupported-ddof-sample-0",
+            "public-unsupported-ddof-group-0"
+          ],
+          [
+            "public-unsupported-ddof-sample-1",
+            "public-unsupported-ddof-group-0"
+          ]
+        ],
+        "profile": {
+          "ddof": 0,
+          "epsilon": 1e-06,
+          "implementation": "grpo_vectorized",
+          "normalize_std": true,
+          "profile_id": "grpo-outcome/sample-std-epsilon-outside/v1",
+          "singleton": "mean0_std1"
+        },
+        "provenance": {
+          "algorithm_sha256": "6ef35e6e93b4cf4773b2e05b40532d7d982335e487c93a49c6c38f6306c83708",
+          "device": "cpu",
+          "dtype": "float32",
+          "framework": "synthetic-anchor",
+          "framework_revision": "hand-derived-v1",
+          "phase": "fixed-acceptance",
+          "receipt_origin": "public_synthetic_numeric_projection",
+          "run_id": "public-unsupported-ddof-v1"
+        },
+        "samples": [
+          {
+            "advantage": [
+              -0.7071062811869011,
+              0.0
+            ],
+            "group_id": "public-unsupported-ddof-group-0",
+            "mask": [
+              1,
+              0
+            ],
+            "reward": 1.0,
+            "sample_id": "public-unsupported-ddof-sample-0"
+          },
+          {
+            "advantage": [
+              0.7071062811869011,
+              0.7071062811869011
+            ],
+            "group_id": "public-unsupported-ddof-group-0",
+            "mask": [
+              1,
+              1
+            ],
+            "reward": 3.0,
+            "sample_id": "public-unsupported-ddof-sample-1"
+          }
+        ],
+        "schema_version": 1
+      }
+    },
+    {
+      "id": "digest-mismatch",
+      "category": "bad_payload",
+      "kind": "digest_mismatch",
+      "base_case": "hand-derived",
+      "codec": "json",
+      "expected_verdict": "ERROR"
+    },
+    {
+      "id": "truncated",
+      "category": "bad_payload",
+      "kind": "truncated",
+      "base_case": "hand-derived",
+      "codec": "safetensors",
+      "remove_bytes": 16,
+      "expected_verdict": "ERROR"
+    }
+  ]
+}

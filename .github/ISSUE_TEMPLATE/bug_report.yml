@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible correctness, replay or runtime problem.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Public issues are visible to everyone. Use synthetic inputs and remove secrets, prompts, model artifacts, private paths and identifying data. Follow SECURITY.md for a suspected vulnerability.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+      description: Describe the trigger, the expected result and the actual verdict or failure.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include runnable commands and a small synthetic example. Share a capsule only after reviewing its contents for public disclosure.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and contract
+      description: Include RLReplay/Python/OS versions, codec, contract/profile and relevant framework revision. Distinguish local results from CI or training integration.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Relevant diagnostics
+      description: Provide reviewed verdicts, completion/error/drop status and the smallest relevant log excerpt. State unavailable evidence explicitly.

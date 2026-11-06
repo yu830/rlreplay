@@ -1,0 +1,51 @@
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Credentials, configuration and private traces
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+private/
+internal/
+.codex/
+.local/
+
+# Large or potentially sensitive RL artifacts
+artifacts/
+checkpoints/
+datasets/
+models/
+raw-traces/
+raw-rollouts/
+demo-output/
+demo-verl-*/
+demo-trl-*/
+known-case-output/
+benchmark-output/
+*.ckpt
+*.safetensors
+*.pt
+*.pth
+*.nsys-rep
+*.sqlite
+*.db
+*.log
+
+# Editor / local OS
+.vscode/
+.idea/
+.DS_Store

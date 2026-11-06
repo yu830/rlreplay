@@ -1,0 +1,66 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            python: "3.11"
+          - os: windows-2025
+            python: "3.12"
+          - os: windows-2025
+            python: "3.14"
+          - os: ubuntu-24.04
+            python: "3.12"
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.12.3"
+          python-version: ${{ matrix.python }}
+          enable-cache: false
+      - name: Install locked development dependencies
+        run: uv sync --python '${{ matrix.python }}' --locked --dev --extra binary
+      - name: Lint
+        run: uv run --no-sync ruff check .
+      - name: Check formatting
+        run: uv run --no-sync ruff format --check .
+      - name: Run CPU tests including the optional codec
+        run: uv run --no-sync pytest -q
+      - name: Build and test the installed wheel
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          $wheelDirectory = Join-Path $env:RUNNER_TEMP 'rlreplay-wheels'
+          $smokeEnvironment = Join-Path $env:RUNNER_TEMP 'rlreplay-wheel-smoke'
+          $smokeOutput = Join-Path $env:RUNNER_TEMP 'rlreplay-synthetic-output'
+          uv build --python '${{ matrix.python }}' --wheel --out-dir $wheelDirectory
+          $wheels = @(Get-ChildItem -LiteralPath $wheelDirectory -Filter '*.whl')
+          if ($wheels.Count -ne 1) { throw 'Expected exactly one built wheel.' }
+          uv venv --python '${{ matrix.python }}' $smokeEnvironment
+          $pythonRelativePath = if ($IsWindows) { 'Scripts/python.exe' } else { 'bin/python' }
+          $smokePython = Join-Path $smokeEnvironment $pythonRelativePath
+          uv pip install --python $smokePython --no-deps $wheels[0].FullName
+          Set-Location -LiteralPath $env:RUNNER_TEMP
+          & $smokePython (Join-Path $env:GITHUB_WORKSPACE '.github/scripts/wheel_smoke.py') --example (Join-Path $env:GITHUB_WORKSPACE 'examples/frozen_contract.py') --output $smokeOutput

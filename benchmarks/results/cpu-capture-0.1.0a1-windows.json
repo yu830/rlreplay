@@ -1,0 +1,106 @@
+{
+  "format": "rlreplay-public-cpu-capture/1",
+  "package_version": "0.1.0a1",
+  "runtime": {
+    "python": "3.12.13",
+    "os": "Windows",
+    "machine": "AMD64",
+    "binary_dependencies": {
+      "numpy": "2.5.4",
+      "safetensors": "0.8.0"
+    }
+  },
+  "source_sha256": {
+    "rlreplay/__init__.py": "f704f32d8d2ec05d2023d25ecf95539b1dcae3c2bcffea47d8ff665148f6bd46",
+    "rlreplay/core.py": "f703556167f8d4929967af8f5f5b9a722fc5d087c0c2de87b29786cc02b73f34",
+    "rlreplay/capture.py": "bd106081a6bdef923cfc4e78b40c9011250abbcd3c89b38947e8d447ff006fc5",
+    "rlreplay/artifacts.py": "dd55321c6bb23e65c7dea81372e0949fde340390316b276cc365ba5620a7482b",
+    "rlreplay/_directory.py": "a61036e457e1655a4ae892dabe3fd78c2d8f8e4209de6acca917c5adac2cd49a",
+    "rlreplay/_snapshot.py": "6ba0e5453bbc4068f7b7fba8894c85d6b31c45cd69d6eddcb85e3e26424048aa",
+    "rlreplay/_receipts.py": "f3eb6efc80171f185a49abbe20f3b7c1a39135f0e524d6c3c8159630afa571cd",
+    "rlreplay/_safetensors.py": "e1f8ae00ef2a0c0b781cc24f4358e91e426633dbb293ac143a7ffa3d2b1b9f2a",
+    "rlreplay/contracts/grpo.py": "3737bdd1ad20cf0898b4978ba1bc49e8351620f8de0d96a60b0bf681f9f171a8"
+  },
+  "benchmark_sha256": "e472fff887b97a5793c06bc10c890149ccafe5a6bd2b11a1c4e8fa645be86b95",
+  "config": {
+    "captures_per_codec": 32,
+    "groups": 2,
+    "responses_per_group": 2,
+    "width": 128,
+    "samples_per_capsule": 4,
+    "interval_ms": 20,
+    "queue_capacity": 2,
+    "storage_budget_bytes": 67108864,
+    "check_in_worker": false
+  },
+  "scope": "one local descriptive Recorder.submit run; input construction excluded, read/check verified; no framework, GPU or external baseline",
+  "cases": [
+    {
+      "codec": "json",
+      "status": "COMPLETE",
+      "offered_calls": 32,
+      "submitted": 32,
+      "terminal": {
+        "COMPLETE": 32
+      },
+      "verified_complete": 32,
+      "findings": {
+        "PASS": 32
+      },
+      "durable_call_fraction": 1.0,
+      "drop_fraction": 0.0,
+      "caller": {
+        "n": 32,
+        "p50_ms": 0.2063,
+        "p95_ms": 0.4444,
+        "p99_ms": 0.9152
+      },
+      "observed_completion_latency": {
+        "n": 32,
+        "p50_ms": 20.3734,
+        "p95_ms": 20.8145,
+        "p99_ms": 21.4628
+      },
+      "elapsed_seconds": 0.6358299,
+      "complete_per_second": 50.327925754985735,
+      "published_bytes": 425280,
+      "warmup_complete": 1,
+      "percentile_method": "nearest rank over observed samples; small-run p99 is not a production tail estimate"
+    },
+    {
+      "codec": "safetensors",
+      "status": "COMPLETE",
+      "offered_calls": 32,
+      "submitted": 32,
+      "terminal": {
+        "COMPLETE": 32
+      },
+      "verified_complete": 32,
+      "findings": {
+        "PASS": 32
+      },
+      "durable_call_fraction": 1.0,
+      "drop_fraction": 0.0,
+      "caller": {
+        "n": 32,
+        "p50_ms": 0.3046,
+        "p95_ms": 0.4041,
+        "p99_ms": 0.4586
+      },
+      "observed_completion_latency": {
+        "n": 32,
+        "p50_ms": 20.4595,
+        "p95_ms": 20.9238,
+        "p99_ms": 24.455
+      },
+      "elapsed_seconds": 0.6446873,
+      "complete_per_second": 49.636467167881236,
+      "published_bytes": 328896,
+      "warmup_complete": 1,
+      "percentile_method": "nearest rank over observed samples; small-run p99 is not a production tail estimate"
+    }
+  ],
+  "result_kind": "one_local_descriptive_run",
+  "reproduction_command": "uv run --locked --extra binary python benchmarks/capture_cpu.py --codec both",
+  "external_baseline": "NOT_RUN"
+}

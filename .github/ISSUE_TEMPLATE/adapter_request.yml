@@ -1,0 +1,26 @@
+name: Adapter or contract request
+description: Propose a concrete training boundary or semantic contract.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem with public references or synthetic data. Keep private training inputs, credentials and model artifacts out of this issue.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Training problem and expected workflow
+      description: Explain the silent failure or debugging task and the detect/replay/regression result you need.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Framework, version and boundary
+      description: Link to the native code or documentation. Identify the inputs, identities, configuration, masks and numerical semantics the adapter would observe.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Validation and existing tools
+      description: Suggest a healthy control, a known fault, an independent reference and relevant existing tools. A small public synthetic case is welcome.

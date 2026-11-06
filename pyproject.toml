@@ -1,0 +1,25 @@
+[project]
+name = "rlreplay"
+version = "0.1.0a1"
+description = "LLM training correctness and failure replay infrastructure (pre-release)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.optional-dependencies]
+binary = ["numpy>=2.3,<3", "safetensors>=0.8,<0.9"]
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+[tool.ruff]
+src = ["src"]
