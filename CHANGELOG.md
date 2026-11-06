@@ -22,4 +22,4 @@ Native replay and generated native regressions currently target verl. TRL uses
 runtime capture, independent checks and semantic replay. Production-scale GPU
 overhead, multi-GPU execution and wider framework or algorithm support require
 their own validation. Local validation evidence and configured CI coverage are
-documented separately from future release and remote CI results.
+documented with their execution scope. Hosted CI results are linked from the validation page.

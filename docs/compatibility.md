@@ -49,7 +49,7 @@ CPython 3.11.15, 3.12.13 and 3.14.7, and 91 tests on WSL CPython 3.12.13. The
 3.11/3.14 installed-wheel runs used NumPy 2.4.6/2.5.4 respectively and safetensors
 0.8.0. Both endpoints also ran the JSON example in isolated no-site mode using
 only the standard library and RLReplay. Framework training was exercised on the
-separately qualified 3.12 environment. Python 3.13 and remote CI await validation.
+separately qualified 3.12 environment. Hosted CI covers Windows 3.11/3.12/3.14 and Linux 3.12. Python 3.13 awaits validation.
 
 Core/JSON uses the standard library. The optional binary codec requires NumPy
 and safetensors. JSON schema v1 remains readable. Windows directories use NTFS
@@ -59,5 +59,5 @@ qualified runtime; cross-host filesystems, shared Windows/WSL locks and global
 quota coordination need deployment-specific qualification.
 
 Existing integration measurements cover local bounded workloads. Longer production runs,
-multi-GPU/multi-node operation and remote CI remain separate qualification work.
+multi-GPU/multi-node operation require separate qualification. Hosted CI evidence is linked from the validation page.
 See [adapter integration](adapters.md) and [runtime contracts](production.md).
