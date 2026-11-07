@@ -107,8 +107,10 @@ def run_verl(evidence: Evidence, *, allow_revision_change=False) -> Evidence:
 
 def diff(left: Evidence, right: Evidence) -> dict:
     """Compare by stable sample identity instead of current batch row order."""
-    left_rows = {row.sample_id: row for row in left.samples}
-    right_rows = {row.sample_id: row for row in right.samples}
+    # Evidence encoding gives NaN and infinities stable representations, while
+    # ordinary numeric equality still treats positive and negative zero alike.
+    left_rows = {row["sample_id"]: row for row in left.to_dict()["samples"]}
+    right_rows = {row["sample_id"]: row for row in right.to_dict()["samples"]}
     changed = [
         sample
         for sample in sorted(left_rows.keys() & right_rows.keys())

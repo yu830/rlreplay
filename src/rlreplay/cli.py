@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 
+from rlreplay import __version__
 from rlreplay.artifacts import read
 from rlreplay.contracts.grpo import check
 from rlreplay.replay import diff, export_test, run_verl, semantic_replay
@@ -16,8 +17,16 @@ EXIT_CODES = {
 }
 
 
-def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(prog="rlreplay")
+class _ArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise ValueError(message)
+
+
+def _parse_args(argv):
+    parser = _ArgumentParser(prog="rlreplay")
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {__version__}"
+    )
     commands = parser.add_subparsers(dest="command", required=True)
     for command in ("inspect", "check", "replay", "diff", "export-test"):
         sub = commands.add_parser(command)
@@ -38,8 +47,12 @@ def main(argv=None) -> int:
             sub.add_argument(
                 "--trainer-factory", help="explicit local module:function for TRL"
             )
-    args = parser.parse_args(argv)
+    return parser.parse_args(argv)
+
+
+def main(argv=None) -> int:
     try:
+        args = _parse_args(argv)
         if args.command in ("replay", "export-test") and args.runner == "trl":
             from rlreplay.trl_replay import (
                 export_trl_test,
@@ -64,10 +77,11 @@ def main(argv=None) -> int:
                         )
                     )
                 }
-            print(json.dumps(output, indent=2, allow_nan=False))
-            return (
+            code = (
                 EXIT_CODES[output["finding"]["verdict"]] if "finding" in output else 0
             )
+            print(json.dumps(output, indent=2, allow_nan=False))
+            return code
         evidence = read(args.capsule)
         if args.command == "inspect":
             output = {
@@ -94,8 +108,14 @@ def main(argv=None) -> int:
             output = diff(evidence, read(args.other))
         else:
             output = {"test": str(export_test(args.capsule, args.directory))}
-    except (OSError, ValueError, TypeError, ImportError) as error:
-        print(json.dumps({"state": "ERROR", "reason": str(error)}), file=sys.stderr)
+        code = EXIT_CODES[output["finding"]["verdict"]] if "finding" in output else 0
+        print(json.dumps(output, indent=2, allow_nan=False))
+        return code
+    except Exception as error:  # noqa: BLE001 - terminal boundary for ordinary failures
+        print(
+            json.dumps(
+                {"state": "ERROR", "reason": str(error), "type": type(error).__name__}
+            ),
+            file=sys.stderr,
+        )
         return 4
-    print(json.dumps(output, indent=2, allow_nan=False))
-    return EXIT_CODES[output["finding"]["verdict"]] if "finding" in output else 0

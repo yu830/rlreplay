@@ -1,8 +1,9 @@
 # Security policy
 
-RLReplay handles training observations and diagnostic artifacts. Its experimental
-API, readers and local capture runtime are still being qualified. Report security
-concerns with the affected version or commit and the smallest safe reproduction.
+RLReplay handles training observations and diagnostic artifacts. Supported
+interfaces and runtime configurations are documented in the compatibility guide.
+Report security concerns with the affected version or commit and the smallest
+safe reproduction.
 
 ## Report privately
 

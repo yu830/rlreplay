@@ -1,12 +1,15 @@
 [project]
 name = "rlreplay"
-version = "0.1.0a1"
-description = "LLM training correctness and failure replay infrastructure (pre-release)"
+version = "0.1.0"
+description = "Debugging and regression-testing tool for LLM training"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 dependencies = []
+
+[project.scripts]
+rlreplay = "rlreplay.cli:main"
 
 [project.urls]
 Repository = "https://github.com/yu830/rlreplay"

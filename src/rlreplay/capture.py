@@ -1,11 +1,13 @@
-"""Bounded asynchronous capture with owned inputs and durable completion receipts."""
+"""Bounded asynchronous capture with owned inputs and publication receipts."""
 
 import logging
 import multiprocessing
+import os
 import queue
 import time
 import uuid
 from collections import Counter, deque
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 
 from rlreplay._directory import writer_directory
@@ -23,6 +25,7 @@ from rlreplay.contracts.grpo import check as check_grpo
 from rlreplay.core import Evidence
 
 LOGGER = logging.getLogger(__name__)
+_BUDGET_RESCAN_INTERVAL = 1.0
 
 
 def _send(outgoing, event):
@@ -30,15 +33,45 @@ def _send(outgoing, event):
 
 
 def _stored_bytes(directory):
-    return sum(
-        path.stat().st_size
-        for suffix in (*CAPSULE_SUFFIXES.values(), ".partial")
-        for path in directory.glob(f"*{suffix}")
+    used = 0
+    suffixes = tuple(
+        os.path.normcase(suffix) for suffix in (*CAPSULE_SUFFIXES.values(), ".partial")
     )
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            if os.path.normcase(entry.name).endswith(suffixes):
+                try:
+                    # DirEntry.stat() can cache enumeration data on Windows.
+                    used += os.stat(entry.path).st_size
+                except FileNotFoundError:
+                    # The owner may delete a file while we are accounting for it.
+                    continue
+    return used
+
+
+def _encode_for_capture(evidence, codec, do_check, started, details):
+    payload = encode(evidence, codec=codec)
+    details["encode_ns"] = time.perf_counter_ns() - started
+    if do_check:
+        check_started = time.perf_counter_ns()
+        try:
+            details.update(
+                check_state="COMPLETE", finding=check_grpo(evidence).to_dict()
+            )
+        except MemoryError:
+            raise
+        except Exception as error:
+            LOGGER.exception(
+                "capture oracle failed (%s)", type(error).__name__, exc_info=False
+            )
+            details.update(check_state="ERROR", check_error=type(error).__name__)
+        details["check_ns"] = time.perf_counter_ns() - check_started
+    return payload
 
 
 def _consume(directory, incoming, outgoing, storage_budget, codec, do_check, parent):
     used = _stored_bytes(directory)
+    last_budget_scan = None
     while parent.is_alive():
         try:
             message = incoming.get(timeout=0.25)
@@ -58,26 +91,16 @@ def _consume(directory, incoming, outgoing, storage_budget, codec, do_check, par
         }
         phase = "encode"
         try:
-            payload = encode(evidence, codec=codec)
-            details["encode_ns"] = time.perf_counter_ns() - started
-            if do_check:
-                check_started = time.perf_counter_ns()
-                try:
-                    details.update(
-                        check_state="COMPLETE", finding=check_grpo(evidence).to_dict()
-                    )
-                except MemoryError:
-                    raise
-                except Exception as error:
-                    LOGGER.exception(
-                        "capture oracle failed (%s)",
-                        type(error).__name__,
-                        exc_info=False,
-                    )
-                    details.update(
-                        check_state="ERROR", check_error=type(error).__name__
-                    )
-                details["check_ns"] = time.perf_counter_ns() - check_started
+            payload = _encode_for_capture(evidence, codec, do_check, started, details)
+            if used + len(payload) > storage_budget:
+                now = time.monotonic()
+                if (
+                    last_budget_scan is None
+                    or now - last_budget_scan >= _BUDGET_RESCAN_INTERVAL
+                ):
+                    last_budget_scan = now
+                    phase = "budget"
+                    used = _stored_bytes(directory)
             if used + len(payload) > storage_budget:
                 _send(
                     outgoing,
@@ -133,7 +156,176 @@ def _consume(directory, incoming, outgoing, storage_budget, codec, do_check, par
             )
 
 
-def _writer(directory, incoming, outgoing, storage_budget, codec, do_check):
+def _consume_concurrent(
+    directory, incoming, outgoing, storage_budget, codec, do_check, parent, concurrency
+):
+    """Serialize admission and accounting while publishing distinct files in parallel."""
+    used = _stored_bytes(directory)
+    reserved = 0
+    last_budget_scan = None
+    accounting_dirty = False
+    pending = {}
+
+    def publish(capture_id, payload):
+        started = time.perf_counter_ns()
+        path = write_payload(
+            directory, capture_id, payload, suffix=CAPSULE_SUFFIXES[codec]
+        )
+        return path, time.perf_counter_ns() - started
+
+    def collect(*, block=False):
+        nonlocal used, reserved, accounting_dirty
+        if not pending:
+            return
+        if block:
+            finished, _ = wait(pending, timeout=0.05, return_when=FIRST_COMPLETED)
+        else:
+            finished = {future for future in pending if future.done()}
+        for future in finished:
+            capture_id, size, details = pending.pop(future)
+            reserved -= size
+            try:
+                path, write_ns = future.result()
+            except MemoryError:
+                raise
+            except Exception as error:
+                LOGGER.exception(
+                    "capture write failed (%s)", type(error).__name__, exc_info=False
+                )
+                _send(
+                    outgoing,
+                    {
+                        "id": capture_id,
+                        "state": "ERROR",
+                        "reason": type(error).__name__,
+                        "phase": "write",
+                        **details,
+                    },
+                )
+                accounting_dirty = True
+            else:
+                used += size
+                details["write_ns"] = write_ns
+                _send(
+                    outgoing,
+                    {
+                        "id": capture_id,
+                        "state": "COMPLETE",
+                        "path": str(path),
+                        "bytes": size,
+                        **details,
+                    },
+                )
+
+    def drain():
+        while pending and parent.is_alive():
+            collect(block=True)
+        return parent.is_alive()
+
+    def reconcile():
+        nonlocal used, accounting_dirty
+        if not accounting_dirty:
+            return True
+        if not drain():
+            return False
+        try:
+            used = _stored_bytes(directory)
+        except OSError:
+            return False
+        accounting_dirty = False
+        return True
+
+    with ThreadPoolExecutor(max_workers=concurrency) as pool:
+        while parent.is_alive():
+            collect()
+            if not reconcile():
+                return
+            if len(pending) >= concurrency:
+                collect(block=True)
+                continue
+            try:
+                message = incoming.get(timeout=0.01 if pending else 0.25)
+            except queue.Empty:
+                continue
+            except (EOFError, OSError):
+                if not parent.is_alive():
+                    return
+                raise
+            if message is None:
+                if drain():
+                    reconcile()
+                return
+
+            capture_id, evidence, enqueued_at = message
+            started = time.perf_counter_ns()
+            details = {
+                "queue_wait_ns": max(0, started - enqueued_at),
+                "check_state": "NOT_RUN",
+            }
+            phase = "encode"
+            payload = None
+            try:
+                payload = _encode_for_capture(
+                    evidence, codec, do_check, started, details
+                )
+                if used + reserved + len(payload) > storage_budget:
+                    now = time.monotonic()
+                    if (
+                        last_budget_scan is None
+                        or now - last_budget_scan >= _BUDGET_RESCAN_INTERVAL
+                    ):
+                        phase = "budget"
+                        # A scan must not double-count files currently being written.
+                        if not drain():
+                            return
+                        last_budget_scan = time.monotonic()
+                        used = _stored_bytes(directory)
+                        accounting_dirty = False
+                if used + reserved + len(payload) > storage_budget:
+                    _send(
+                        outgoing,
+                        {
+                            "id": capture_id,
+                            "state": "DROPPED",
+                            "reason": "storage_budget",
+                            **details,
+                        },
+                    )
+                    continue
+                phase = "write"
+                size = len(payload)
+                future = pool.submit(publish, capture_id, payload)
+                pending[future] = (capture_id, size, details)
+                reserved += size
+            except MemoryError:
+                raise
+            except Exception as error:
+                LOGGER.exception(
+                    "capture %s failed (%s)",
+                    phase,
+                    type(error).__name__,
+                    exc_info=False,
+                )
+                _send(
+                    outgoing,
+                    {
+                        "id": capture_id,
+                        "state": "ERROR",
+                        "reason": type(error).__name__,
+                        "phase": phase,
+                        **details,
+                    },
+                )
+                if accounting_dirty:
+                    return
+            finally:
+                # Keep at most one encoded payload per configured I/O task.
+                payload = None
+
+
+def _writer(
+    directory, incoming, outgoing, storage_budget, codec, do_check, io_concurrency=1
+):
     incoming._writer.close()
     outgoing._reader.close()
     parent = multiprocessing.parent_process()
@@ -141,9 +333,27 @@ def _writer(directory, incoming, outgoing, storage_budget, codec, do_check):
     try:
         with writer_directory(directory):
             phase = "worker"
-            _consume(
-                directory, incoming, outgoing, storage_budget, codec, do_check, parent
-            )
+            if io_concurrency == 1:
+                _consume(
+                    directory,
+                    incoming,
+                    outgoing,
+                    storage_budget,
+                    codec,
+                    do_check,
+                    parent,
+                )
+            else:
+                _consume_concurrent(
+                    directory,
+                    incoming,
+                    outgoing,
+                    storage_budget,
+                    codec,
+                    do_check,
+                    parent,
+                    io_concurrency,
+                )
     except (OSError, EOFError) as error:
         _send(
             outgoing, {"state": "ERROR", "reason": type(error).__name__, "phase": phase}
@@ -157,9 +367,12 @@ def _writer(directory, incoming, outgoing, storage_budget, codec, do_check):
 class Recorder:
     """Single-producer capture with bounded input ownership and an isolated worker.
 
-    Reservations, queued items and the active worker are limited to queue_capacity
+    Reservations, queued items and active writes are limited to queue_capacity
     + 1. Input charge and encoded file limits are separate from measured process RSS.
     submit() freezes inputs; encoding/checking failures arrive through poll().
+    An optional inflight_snapshot_budget caps the aggregate charge of pending
+    snapshots. Omitting it preserves the previous per-slot accounting bound.
+    io_concurrency enables up to eight parallel publications; the default is one.
     """
 
     def __init__(
@@ -170,6 +383,8 @@ class Recorder:
         storage_budget=64 * 1024 * 1024,
         codec="json",
         snapshot_budget=DEFAULT_SNAPSHOT_BUDGET,
+        inflight_snapshot_budget=None,
+        io_concurrency=1,
         check=False,
     ):
         if any(
@@ -179,14 +394,26 @@ class Recorder:
             raise ValueError("capture budgets must be positive integers")
         if type(check) is not bool:
             raise TypeError("check must be boolean")
+        if type(io_concurrency) is not int or not 1 <= io_concurrency <= 8:
+            raise ValueError("io_concurrency must be an integer between 1 and 8")
+        if inflight_snapshot_budget is not None and (
+            type(inflight_snapshot_budget) is not int or inflight_snapshot_budget < 1
+        ):
+            raise ValueError("inflight snapshot budget must be a positive integer")
         self.directory = Path(directory).resolve()
         prepare_codec(codec)
         self.codec = codec
+        self.io_concurrency = io_concurrency
         self.storage_budget = storage_budget
         self.snapshot_budget = snapshot_budget
         # This legacy field bounds encoded outputs, not in-memory Python snapshots.
         self.max_queued_bytes = (queue_capacity + 1) * MAX_CAPSULE_BYTES
-        self.max_inflight_snapshot_charge = (queue_capacity + 1) * snapshot_budget
+        nominal_charge = (queue_capacity + 1) * snapshot_budget
+        self.max_inflight_snapshot_charge = (
+            nominal_charge
+            if inflight_snapshot_budget is None
+            else min(nominal_charge, inflight_snapshot_budget)
+        )
         self._capacity = queue_capacity + 1
         context = multiprocessing.get_context("spawn")
         self._incoming = context.Queue(maxsize=queue_capacity)
@@ -200,7 +427,8 @@ class Recorder:
                 storage_budget,
                 codec,
                 check,
-            ),
+            )
+            + ((io_concurrency,) if io_concurrency > 1 else ()),
             daemon=True,
         )
         self._closed = False
@@ -225,6 +453,10 @@ class Recorder:
         if len(self._pending) + len(self._reservations) >= self._capacity:
             self._remember({"state": "DROPPED", "reason": "inflight_budget"})
             return None
+        pending_charge = sum(charge for _, charge in self._pending.values())
+        if pending_charge >= self.max_inflight_snapshot_charge:
+            self._remember({"state": "DROPPED", "reason": "inflight_snapshot_budget"})
+            return None
         if self._incoming.full():
             self._remember({"state": "DROPPED", "reason": "queue_full"})
             return None
@@ -248,19 +480,29 @@ class Recorder:
             return None
         if capture_id not in self._reservations:
             raise ValueError("capture reservation is not active")
+        if reservation is not None:
+            self._collect()
         if self._closed or self._channel_failed or not self._process.is_alive():
             self.cancel(capture_id, reason="writer_unavailable")
             return None
         try:
-            owned, charged = freeze(evidence, self.snapshot_budget)
+            pending_charge = sum(charge for _, charge in self._pending.values())
+            remaining = self.max_inflight_snapshot_charge - pending_charge
+            owned, charged = freeze(evidence, min(self.snapshot_budget, remaining))
         except SnapshotBudgetExceeded:
             self._reservations.remove(capture_id)
-            self._remember(
-                {"id": capture_id, "state": "DROPPED", "reason": "snapshot_budget"}
+            reason = (
+                "inflight_snapshot_budget"
+                if remaining < self.snapshot_budget
+                else "snapshot_budget"
             )
+            self._remember({"id": capture_id, "state": "DROPPED", "reason": reason})
             return None
         except (ValueError, TypeError, OverflowError):
             self.cancel(capture_id, reason="snapshot_invalid")
+            raise
+        except BaseException:
+            self.cancel(capture_id, reason="snapshot_failed")
             raise
         enqueued_at = time.perf_counter_ns()
         try:

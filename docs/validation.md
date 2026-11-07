@@ -1,6 +1,8 @@
 # Validation and known controls
 
-The local prototype has unit checks, a fixed synthetic control set and a small reproducible CPU capture benchmark. These provide scoped evidence; fixed control ratios do not estimate production accuracy, false-positive rate or defect prevalence.
+RLReplay has unit checks, a fixed synthetic control set and reproducible CPU
+capture benchmarks. These provide scoped evidence; fixed control ratios do not
+estimate production accuracy, false-positive rate or defect prevalence.
 
 ## Run the test suite
 
@@ -10,7 +12,14 @@ uv run --locked --extra binary ruff check .
 uv run --locked --extra binary ruff format --check .
 ```
 
-The `0.1.0a1` candidate's 91-item suite includes three regression cases for unexpected CLI responses in the public validator. It was run from isolated installed packages on 2026-11-06:
+For 0.1.0, a local Windows Python 3.12 run completed 192 tests with one
+platform-specific skip, and the fixed public control set matched 76/76 commands.
+The [real-framework CPU qualification](framework-cpu-qualification.md) exercises
+the pinned framework methods in separate environments.
+
+The historical `0.1.0a1` candidate's 91-item suite included three regression
+cases for unexpected CLI responses in the public validator. It was run from
+isolated installed packages on 2026-11-06:
 
 | Environment | Recorded result |
 |---|---|
@@ -102,6 +111,6 @@ qualification is separate from the historical hosted CI result above.
 uv run --locked --extra binary python benchmarks/capture_cpu.py --codec both
 ```
 
-See [benchmark method](../benchmarks/README.md) and the [recorded alpha1 local result](../benchmarks/results/cpu-capture-0.1.0a1-windows.json). The 32-capture run completed/read/checked 32/32 per codec; a separate 4-capture/tiny-shape functional smoke also completed both formats. These are descriptive current-SDK runs, with no external baseline or release-to-release percentage claim. Small-sample p99 and paced completion rate are not production guarantees.
+See [benchmark method](../benchmarks/README.md) and the [recorded alpha1 local result](../benchmarks/results/cpu-capture-0.1.0a1-windows.json). The 32-capture run completed/read/checked 32/32 per codec; a separate 4-capture/tiny-shape functional smoke also completed both formats. Those are descriptive alpha1 runs, with no external baseline or release-to-release percentage claim. Small-sample p99 and paced completion rate are not production guarantees.
 
-Additional local asset checks cover fixture transformation, missing binary dependencies stopping before commands, JSON-subset reporting and binary32 synthetic inputs. Their evidence supplements the 91-item suite. Hosted CI runs that suite and installed-wheel checks. Independent-user workloads and broader production numerical qualification require further evidence.
+Additional local asset checks cover fixture transformation, missing binary dependencies stopping before commands, JSON-subset reporting and binary32 synthetic inputs. Hosted CI runs the current suite and installed-wheel checks. Independent-user workloads and broader production numerical qualification require further evidence.

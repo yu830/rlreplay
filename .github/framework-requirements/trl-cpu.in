@@ -1,0 +1,10 @@
+torch==2.13.0+cpu
+numpy==2.3.5
+transformers==5.12.1
+tokenizers==0.22.2
+datasets==5.1.0
+accelerate==1.15.0
+pandas==3.1.0
+peft==0.21.2
+pytest==9.2.0
+trl @ git+https://github.com/huggingface/trl.git@a16af6502c4a1922045be533c94f66dd7c981374

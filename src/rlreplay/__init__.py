@@ -1,3 +1,3 @@
-"""Local correctness evidence, GRPO checking and explicit replay prototypes."""
+"""Debugging, correctness checks and regression replay for LLM training."""
 
-__version__ = "0.1.0a1"
+__version__ = "0.1.0"

@@ -1,6 +1,7 @@
 # Documentation
 
-RLReplay records declared training contracts and numeric observations, checks
+RLReplay is a debugging and regression-testing tool. It records training
+contracts and numeric observations, checks
 them independently, and carries reproducible failures into replay and regression.
 
 | What you want to do | Start here |
@@ -17,7 +18,8 @@ them independently, and carries reproducible failures into replay and regression
 | Replay a native TRL method or test a candidate | [TRL frozen-provider replay](trl-native-replay.md) |
 | Reproduce the validation controls | [Validation](validation.md) |
 | Measure capture cost and coverage | [Benchmarks](../benchmarks/README.md) |
+| Reproduce real-framework CPU qualification | [Framework CPU qualification](framework-cpu-qualification.md) |
 | Contribute a fix or adapter | [Contributing](../CONTRIBUTING.md) |
 
-The current release is experimental. The compatibility and validation pages
-identify the scope supported by actual evidence.
+The compatibility and validation pages identify supported configurations and the
+evidence for them.

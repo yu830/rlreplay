@@ -105,7 +105,7 @@ class VerlObserver:
         self.events.append(event)
 
     def coverage(self) -> dict:
-        """Keep attempted calls, skipped calls, sampled rows, and durable receipts separate."""
+        """Keep attempted calls, skipped calls, sampled rows, and completion receipts separate."""
         return {
             "mode": self.mode,
             "sample_every": self.sample_every,

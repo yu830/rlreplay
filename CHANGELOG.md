@@ -1,6 +1,20 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
+
+- Installable `rlreplay` command with `--version`; ordinary CLI failures report
+  structured `ERROR` and exit 4 without reusing numeric verdict exit codes.
+- Compare captured nonfinite values consistently, including NaN with NaN, in
+  JSON and safetensors diffs. Detect binary32 reference overflow at intermediate
+  operations and report it as inconclusive.
+- Recheck storage usage under budget pressure so a running Recorder can resume
+  after retained artifacts are removed, while keeping the normal path scan-free.
+- Optionally cap aggregate in-flight snapshot charge independently of queue size;
+  preserve default limits and report budget rejections explicitly.
+- Opt into bounded parallel file publication with `io_concurrency=2..8`; the
+  default remains serial and parallel receipts can arrive out of submission order.
+- Add manually triggered pinned Linux CPU qualification for real verl and TRL
+  boundaries, including source-only candidate and injected-fault controls.
 
 - Explicit CPU TRL native-method replay and regression export using a separate
   frozen-generation/reward bundle and a caller-supplied real Trainer factory.

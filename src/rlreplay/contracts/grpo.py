@@ -15,7 +15,10 @@ RTOL = 1e-5
 
 
 def _f32(value: float) -> float:
-    return struct.unpack("f", struct.pack("f", value))[0]
+    rounded = struct.unpack("f", struct.pack("f", value))[0]
+    if not math.isfinite(rounded):
+        raise OverflowError("binary32 reference became nonfinite")
+    return rounded
 
 
 def reference(

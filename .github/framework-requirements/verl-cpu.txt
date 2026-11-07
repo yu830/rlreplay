@@ -1,0 +1,446 @@
+# Linux x86_64 / Python 3.12 lock, resolved from verl-cpu.in with uv 0.12.3.
+# PyTorch CPU index: https://download.pytorch.org/whl/cpu
+absl-py==2.5.1
+    # via tensorboard
+accelerate==1.15.0
+    # via
+    #   peft
+    #   verl
+aiohappyeyeballs==2.7.1
+    # via aiohttp
+aiohttp==3.14.5
+    # via
+    #   aiohttp-cors
+    #   fsspec
+    #   ray
+aiohttp-cors==0.8.1
+    # via ray
+aiosignal==1.4.0
+    # via aiohttp
+annotated-doc==0.0.5
+    # via
+    #   fastapi
+    #   typer
+annotated-types==0.8.0
+    # via pydantic
+antlr4-python3-runtime==4.9.3
+    # via
+    #   hydra-core
+    #   omegaconf
+anyio==4.16.0
+    # via
+    #   cwevals
+    #   httpx
+    #   starlette
+attrs==26.1.0
+    # via
+    #   aiohttp
+    #   jsonschema
+    #   referencing
+cachetools==7.3.0
+    # via -r .github/framework-requirements/verl-cpu.in
+certifi==2026.10.23
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
+cffi==2.1.1
+    # via cryptography
+charset-normalizer==3.5.2
+    # via requests
+click==8.5.0
+    # via
+    #   huggingface-hub
+    #   ray
+    #   uvicorn
+    #   wandb
+cloudpickle==3.1.2
+    # via tensordict
+codetiming==1.4.0
+    # via verl
+colorful==0.5.8
+    # via ray
+cryptography==50.0.2
+    # via google-auth
+cwevals==0.0.1b1
+    # via wandb
+datasets==5.1.0
+    # via verl
+dill==0.4.1
+    # via
+    #   datasets
+    #   multiprocess
+    #   verl
+distlib==0.4.4
+    # via virtualenv
+distro==1.9.0
+    # via cwevals
+fastapi==0.162.0
+    # via -r .github/framework-requirements/verl-cpu.in
+filelock==4.2.9
+    # via
+    #   datasets
+    #   huggingface-hub
+    #   python-discovery
+    #   ray
+    #   torch
+    #   virtualenv
+frozenlist==1.8.0
+    # via
+    #   aiohttp
+    #   aiosignal
+fsspec==2026.7.0
+    # via
+    #   datasets
+    #   huggingface-hub
+    #   torch
+google-api-core==2.44.0
+    # via opencensus
+google-auth==2.62.1
+    # via google-api-core
+googleapis-common-protos==1.76.0
+    # via
+    #   google-api-core
+    #   opentelemetry-exporter-otlp-proto-http
+grpcio==1.85.1
+    # via
+    #   ray
+    #   tensorboard
+h11==0.16.0
+    # via
+    #   httpcore
+    #   uvicorn
+hf-xet==1.8.0
+    # via huggingface-hub
+httpcore==1.0.9
+    # via httpx
+httpx==0.28.1
+    # via
+    #   cwevals
+    #   huggingface-hub
+huggingface-hub==1.33.0
+    # via
+    #   accelerate
+    #   datasets
+    #   peft
+    #   tokenizers
+    #   transformers
+hydra-core==1.3.8
+    # via verl
+idna==3.20
+    # via
+    #   anyio
+    #   httpx
+    #   requests
+    #   yarl
+importlib-metadata==10.1.0
+    # via tensordict
+iniconfig==2.3.1
+    # via pytest
+jinja2==3.1.6
+    # via torch
+jsonschema==4.26.0
+    # via ray
+jsonschema-specifications==2025.9.1
+    # via jsonschema
+markdown==3.11.3
+    # via tensorboard
+markdown-it-py==4.2.0
+    # via rich
+markupsafe==3.0.4
+    # via
+    #   jinja2
+    #   werkzeug
+mdurl==0.1.2
+    # via markdown-it-py
+mpmath==1.3.0
+    # via sympy
+msgpack==1.2.4
+    # via ray
+multidict==7.2.1
+    # via
+    #   aiohttp
+    #   yarl
+multiprocess==0.70.19
+    # via datasets
+networkx==3.7
+    # via torch
+numpy==2.5.4
+    # via
+    #   -r .github/framework-requirements/verl-cpu.in
+    #   accelerate
+    #   datasets
+    #   pandas
+    #   peft
+    #   tensorboard
+    #   tensordict
+    #   transformers
+    #   verl
+omegaconf==2.3.1
+    # via hydra-core
+opencensus==0.11.4
+    # via ray
+opencensus-context==0.1.3
+    # via opencensus
+opentelemetry-api==1.45.2
+    # via
+    #   fastapi
+    #   google-api-core
+    #   opentelemetry-exporter-http-transport
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-exporter-prometheus
+    #   opentelemetry-sdk
+    #   opentelemetry-semantic-conventions
+    #   wandb
+opentelemetry-exporter-http-transport==0.66b2
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-common==0.66b2
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-common==1.45.2
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-http==1.45.2
+    # via wandb
+opentelemetry-exporter-prometheus==0.66b2
+    # via ray
+opentelemetry-proto==1.45.2
+    # via
+    #   opentelemetry-exporter-otlp-proto-common
+    #   opentelemetry-exporter-otlp-proto-http
+    #   ray
+opentelemetry-sdk==1.45.2
+    # via
+    #   opentelemetry-exporter-otlp-common
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-exporter-prometheus
+    #   ray
+    #   wandb
+opentelemetry-semantic-conventions==0.66b2
+    # via opentelemetry-sdk
+orjson==3.13.0
+    # via tensordict
+packaging==25.0
+    # via
+    #   accelerate
+    #   datasets
+    #   huggingface-hub
+    #   hydra-core
+    #   peft
+    #   pytest
+    #   pyvers
+    #   ray
+    #   tensorboard
+    #   tensordict
+    #   transformers
+    #   verl
+    #   virtualenv
+    #   wandb
+pandas==3.1.1
+    # via
+    #   datasets
+    #   verl
+peft==0.21.2
+    # via verl
+pillow==13.0.0
+    # via tensorboard
+platformdirs==4.14.5
+    # via
+    #   virtualenv
+    #   wandb
+pluggy==1.7.0
+    # via pytest
+prometheus-client==0.26.0
+    # via
+    #   opentelemetry-exporter-prometheus
+    #   ray
+propcache==0.5.4
+    # via
+    #   aiohttp
+    #   yarl
+proto-plus==1.29.0
+    # via google-api-core
+protobuf==7.36.2
+    # via
+    #   google-api-core
+    #   googleapis-common-protos
+    #   opentelemetry-proto
+    #   proto-plus
+    #   ray
+    #   tensorboard
+    #   wandb
+psutil==7.2.2
+    # via
+    #   accelerate
+    #   peft
+py-spy==0.4.3
+    # via ray
+pyarrow==26.0.1
+    # via
+    #   datasets
+    #   verl
+pyasn1==0.6.5
+    # via pyasn1-modules
+pyasn1-modules==0.4.2
+    # via google-auth
+pybind11==3.1.0
+    # via verl
+pycparser==3.12
+    # via cffi
+pydantic==2.14.3
+    # via
+    #   cwevals
+    #   fastapi
+    #   ray
+    #   wandb
+pydantic-core==2.50.4
+    # via pydantic
+pygments==2.21.0
+    # via
+    #   pytest
+    #   rich
+pylatexenc==2.11
+    # via verl
+pytest==9.2.0
+    # via -r .github/framework-requirements/verl-cpu.in
+python-dateutil==4.0.0
+    # via pandas
+python-discovery==1.9.4
+    # via virtualenv
+pyvers==0.1.0
+    # via tensordict
+pyyaml==6.0.3
+    # via
+    #   accelerate
+    #   datasets
+    #   huggingface-hub
+    #   omegaconf
+    #   peft
+    #   ray
+    #   transformers
+    #   wandb
+ray==2.60.0
+    # via
+    #   -r .github/framework-requirements/verl-cpu.in
+    #   verl
+referencing==0.37.0
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+regex==2026.9.29
+    # via transformers
+requests==2.34.2
+    # via
+    #   google-api-core
+    #   opentelemetry-exporter-http-transport
+    #   opentelemetry-exporter-otlp-proto-http
+    #   ray
+    #   torchdata
+    #   wandb
+rich==15.0.0
+    # via typer
+rpds-py==2026.9.1
+    # via
+    #   jsonschema
+    #   referencing
+safetensors==0.8.0
+    # via
+    #   accelerate
+    #   peft
+    #   transformers
+setuptools==84.2.1
+    # via
+    #   tensorboard
+    #   torch
+shellingham==1.5.4
+    # via typer
+six==1.17.0
+    # via opencensus
+smart-open==9.0.2
+    # via ray
+sniffio==1.3.1
+    # via cwevals
+starlette==1.10.0
+    # via fastapi
+sympy==1.14.0
+    # via torch
+tensorboard==2.21.0
+    # via verl
+tensorboard-data-server==0.7.2
+    # via tensorboard
+tensordict==0.10.0
+    # via
+    #   -r .github/framework-requirements/verl-cpu.in
+    #   verl
+tokenizers==0.23.3
+    # via transformers
+torch==2.13.0+cpu
+    # via
+    #   -r .github/framework-requirements/verl-cpu.in
+    #   accelerate
+    #   peft
+    #   tensordict
+    #   torchdata
+torchdata==0.11.0
+    # via verl
+tqdm==4.70.1
+    # via
+    #   datasets
+    #   huggingface-hub
+    #   peft
+    #   transformers
+transformers==5.16.1
+    # via
+    #   -r .github/framework-requirements/verl-cpu.in
+    #   peft
+    #   verl
+typer==0.28.0
+    # via transformers
+typing-extensions==4.16.0
+    # via
+    #   aiohttp
+    #   aiosignal
+    #   anyio
+    #   cwevals
+    #   fastapi
+    #   grpcio
+    #   huggingface-hub
+    #   opentelemetry-api
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-sdk
+    #   opentelemetry-semantic-conventions
+    #   pydantic
+    #   pydantic-core
+    #   referencing
+    #   starlette
+    #   torch
+    #   typing-inspection
+    #   wandb
+typing-inspection==0.4.5
+    # via
+    #   fastapi
+    #   pydantic
+tzdata==2026.6
+    # via python-dateutil
+urllib3==2.8.0
+    # via
+    #   requests
+    #   torchdata
+uvicorn==0.54.0
+    # via -r .github/framework-requirements/verl-cpu.in
+verl @ git+https://github.com/verl-project/verl.git@31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe
+    # via -r .github/framework-requirements/verl-cpu.in
+virtualenv==21.14.5
+    # via ray
+wandb==0.31.0
+    # via verl
+werkzeug==3.1.9
+    # via tensorboard
+wrapt==2.5.2
+    # via smart-open
+xxhash==4.0.2
+    # via
+    #   datasets
+    #   wandb
+yarl==1.25.1
+    # via aiohttp
+zipp==4.1.2
+    # via importlib-metadata

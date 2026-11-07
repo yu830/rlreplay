@@ -2,8 +2,8 @@
 
 ## Mission
 
-Build open, extensible, production-usable infrastructure for LLM training
-correctness and failure replay. Enable engineers to detect silent violations of
+Build a practical debugging and regression-testing tool for LLM training.
+Enable engineers to detect silent violations of
 declared training contracts, diagnose them through independent validation and
 linked evidence, replay failing computations under explicit reproducibility
 conditions, and turn verified defects into automated regression tests.

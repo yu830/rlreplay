@@ -2,17 +2,20 @@
 
 [![CI](https://github.com/yu830/rlreplay/actions/workflows/ci.yml/badge.svg)](https://github.com/yu830/rlreplay/actions/workflows/ci.yml)
 
-LLM training correctness and failure replay infrastructure.
+A debugging and regression-testing tool for LLM training.
 
-Experimental · Apache-2.0
+Capture a computation, check its declared contract, replay a failure, and export
+a regression test.
+
+Apache-2.0
 
 [Goal](GOAL.md) · [Documentation](docs/index.md) · [Quick start](docs/quickstart.md) ·
 [Compatibility](docs/compatibility.md) · [中文上手](docs/zh/quickstart.md)
 
 ## Goal
 
-Build open, extensible, production-usable infrastructure for LLM training
-correctness and failure replay. Detect silent violations of declared training
+Provide a practical tool engineers can use to diagnose LLM training computations
+and verify fixes. Detect silent violations of declared training
 contracts, diagnose them through independent validation and linked evidence,
 replay failing computations under explicit reproducibility conditions, and turn
 verified defects into automated regression tests.
@@ -33,6 +36,19 @@ versions, modes and numerical assumptions are listed in
 |---|---|---|---|---|
 | verl | Qualified CPU driver boundary | Available | Qualified driver | Available |
 | TRL | Qualified single-process CPU Trainer hooks | Available | [Frozen-provider CPU method](docs/trl-native-replay.md) | Available for the explicit native bundle |
+
+## Command-line tool
+
+Download the wheel from the [0.1.0 GitHub Release](https://github.com/yu830/rlreplay/releases/tag/v0.1.0)
+and install it with Python 3.11 or later:
+
+```bash
+python -m pip install ./rlreplay-0.1.0-py3-none-any.whl
+```
+
+After installation, run `rlreplay --help`. The same commands are available through
+`python -m rlreplay`. From a source checkout, use `uv run --locked rlreplay --help`.
+The JSON workflow below needs no training framework or model download.
 
 ## Try the JSON workflow
 

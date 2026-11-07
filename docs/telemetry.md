@@ -35,7 +35,7 @@ Recorder counters use the following source fields:
 | `check_errors` | `rlreplay.check.errors` |
 | `finding_PASS`, `finding_CONTRACT_VIOLATION`, `finding_SUSPECTED_MISMATCH`, `finding_INCONCLUSIVE` | `rlreplay.check.pass`, `.contract_violations`, `.suspected_mismatches`, `.inconclusive` |
 
-`attempts` counts reservation attempts, including admission rejection; it is distinct from Observer calls. `completions` counts processed durable completion receipts. Source event categories can overlap: an initialization error can coexist with partial pending captures, and a persisted capture can have a check error. They are not an exhaustive partition suitable for blindly deriving a success rate.
+`attempts` counts reservation attempts, including admission rejection; it is distinct from Observer calls. `completions` counts processed publication receipts. Source event categories can overlap: an initialization error can coexist with partial pending captures, and a persisted capture can have a check error. They are not an exhaustive partition suitable for blindly deriving a success rate.
 
 Optional Observer counters are:
 
@@ -47,7 +47,7 @@ Optional Observer counters are:
 | `snapshot_calls`, `captured_samples`, `captured_groups`, `submitted_calls` | `snapshots`, `captured_samples`, `captured_groups`, `submissions` |
 | `NOT_RUN`, `UNSUPPORTED`, `DROPPED`, `ERROR` | `not_run`, `unsupported`, `drops`, `errors` |
 
-Sample/group counters count instances across calls, including repeated identities. Snapshot/submission coverage does not establish durable completion or correctness-check coverage. This converter does not infer missing denominators or emit a fabricated coverage ratio.
+Sample/group counters count instances across calls, including repeated identities. Snapshot/submission coverage does not establish publication or correctness-check coverage. This converter does not infer missing denominators or emit a fabricated coverage ratio.
 
 Current gauges come from a caller-supplied status snapshot:
 

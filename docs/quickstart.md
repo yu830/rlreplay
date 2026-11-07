@@ -69,7 +69,11 @@ reports `s0` as changed and exits 0 for a completed comparison.
 | 1 | CONTRACT_VIOLATION |
 | 2 | SUSPECTED_MISMATCH |
 | 3 | INCONCLUSIVE, including missing or unsupported evidence |
-| 4 | Input, source or environment error |
+| 4 | Command usage, input, source, execution or output error |
+
+Tool errors are JSON objects on stderr with `state: "ERROR"`, a reason and an
+exception type. They do not represent a numeric verdict. `rlreplay --help` and
+`rlreplay --version` exit successfully.
 
 The generated examples are synthetic and use explicit synthetic provenance.
 Native verl replay requires a real verl driver capsule, the qualified training

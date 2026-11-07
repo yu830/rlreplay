@@ -1,0 +1,10 @@
+torch==2.13.0+cpu
+numpy==2.5.4
+transformers==5.16.1
+tensordict==0.10.0
+ray==2.60.0
+pytest==9.2.0
+cachetools==7.3.0
+uvicorn==0.54.0
+fastapi==0.162.0
+verl @ git+https://github.com/verl-project/verl.git@31cfccb4dbad8f1f4aa41a34eb589afbe283e8fe
